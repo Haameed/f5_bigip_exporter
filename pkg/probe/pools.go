@@ -198,7 +198,7 @@ func GetPoolProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool) {
 		poolMemberStatus = prometheus.NewDesc(
 			"bigip_pool_member_state",
 			"State of the pool member (0=down, 1=up)",
-			[]string{"target", "pool", "partition", "member"}, nil,
+			[]string{"target", "pool", "partition", "member", "session"}, nil,
 		)
 	)
 
@@ -566,7 +566,7 @@ func GetPoolProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool) {
 				poolMemberStatus,
 				prometheus.GaugeValue,
 				float64(memberState),
-				target, pool.PoolName, pool.Partition, member.Name,
+				target, pool.PoolName, pool.Partition, member.Name, member.Session,
 			))
 		}
 	}
