@@ -1,16 +1,16 @@
 services:
-  bigip_exporter:
+  f5_bigip_exporter:
     build: .
-    image: bigip_exporter:latest
-    container_name: bigip_exporter
+    image: ghcr.io/haameed/f5_bigip_exporter:latest
+    container_name: f5_bigip_exporter
     restart: unless-stopped
     ports:
       - "11000:11000"
     volumes:
-      - ./bigip-config.yaml:/etc/bigip_exporter/bigip-config.yaml:ro
+      - ./bigip-config.yaml:/etc/f5_bigip_exporter/bigip-config.yaml:ro
     command:
       - "-config"
-      - "/etc/bigip_exporter/bigip-config.yaml"
+      - "/etc/f5_bigip_exporter/bigip-config.yaml"
       - "-insecure"   # remove this if your BIG-IP uses trusted certs
     networks:
       - monitoring
@@ -26,7 +26,7 @@ services:
     networks:
       - monitoring
     depends_on:
-      - bigip_exporter
+      - f5_bigip_exporter
 
 networks:
   monitoring:

@@ -11,4 +11,4 @@ EXPOSE 11000
 USER nonroot:nonroot
 
 ENTRYPOINT ["/bin/f5_bigip_exporter"]
-CMD ["-config", "/etc/bigip_exporter/bigip-config.yaml"]
+CMD ["-config", "/etc/f5_bigip_exporter/bigip-config.yaml"]

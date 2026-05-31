@@ -29,7 +29,7 @@ By participating, you are expected to uphold it.
 ## Development Setup
 
     git clone https://github.com/Haameed/f5_bigip_exporter.git
-    cd bigip_exporter
+    cd f5_bigip_exporter
     make build
     make test
 

@@ -5,7 +5,7 @@ before:
     - go mod tidy
 
 builds:
-  - id: bigip_exporter
+  - id: f5_bigip_exporter
     main: ./cmd/f5_bigip_exporter
     binary: f5_bigip_exporter
     env:

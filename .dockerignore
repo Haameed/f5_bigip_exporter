@@ -8,7 +8,7 @@ Dockerfile
 .gitignore
 coverage.out
 coverage.html
-bigip_exporter
+f5_bigip_exporter
 config.yml
 *.yaml
 *.yml

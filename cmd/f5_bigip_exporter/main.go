@@ -17,7 +17,7 @@ var (
 )
 
 func main() {
-	log.Printf("Starting bigip_exporter version=%s commit=%s buildDate=%s", version, commit, buildDate)
+	log.Printf("Starting f5_bigip_exporter version=%s commit=%s buildDate=%s", version, commit, buildDate)
 
 	if err := config.Init(); err != nil {
 		log.Fatalf("Initialization error: %+v", err)

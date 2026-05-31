@@ -32,7 +32,7 @@ jobs:
         run: go test -race -count=1 ./...
 
       - name: Build
-        run: go build -o /dev/null ./cmd/bigip_exporter
+        run: go build -o /dev/null ./cmd/f5_bigip_exporter
 
   lint:
     name: Lint

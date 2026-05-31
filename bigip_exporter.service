@@ -6,8 +6,8 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-User=bigip_exporter
-Group=bigip_exporter
+User=f5_bigip_exporter
+Group=f5_bigip_exporter
 ExecStart=/usr/local/bin/f5_bigip_exporter \
     -config /etc/f5_bigip_exporter/bigip-config.yaml \
     -listen :11000 \
@@ -24,7 +24,7 @@ PrivateDevices=true
 ProtectKernelTunables=true
 ProtectControlGroups=true
 RestrictAddressFamilies=AF_INET AF_INET6
-ReadOnlyPaths=/etc/bigip_exporter
+ReadOnlyPaths=/etc/f5_bigip_exporter
 
 [Install]
 WantedBy=multi-user.target

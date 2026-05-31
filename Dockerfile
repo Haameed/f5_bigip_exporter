@@ -21,7 +21,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
       -X main.version=${VERSION} \
       -X main.commit=${COMMIT} \
       -X main.buildDate=${BUILD_DATE}" \
-    -o /bin/f5_bigip_exporter ./cmd/bigip_exporter
+    -o /bin/f5_bigip_exporter ./cmd/f5_bigip_exporter
 
 # ---- Runtime stage ----
 FROM gcr.io/distroless/static-debian12:nonroot
@@ -37,4 +37,4 @@ EXPOSE 11000
 USER nonroot:nonroot
 
 ENTRYPOINT ["/bin/f5_bigip_exporter"]
-CMD ["-config", "/etc/bigip_exporter/bigip-config.yaml"]
+CMD ["-config", "/etc/f5_bigip_exporter/bigip-config.yaml"]
