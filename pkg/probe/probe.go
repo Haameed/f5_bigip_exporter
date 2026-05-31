@@ -56,6 +56,7 @@ func (p *Collector) Probe(ctx context.Context, target map[string]string, hc *htt
 		{"SyncGroup", GetSyncGroupProbe},
 		{"Pools", GetPoolProbe},
 		{"Certificates", GetCertificateProbe},
+		{"Traffic", GetTrafficProbe},
 	}
 
 	success := true
