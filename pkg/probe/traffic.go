@@ -394,13 +394,13 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 		}
 		m = append(m, prometheus.MustNewConstMetric(
 			ClientSideTrafficBitsIn,
-			prometheus.GaugeValue,
+			prometheus.CounterValue,
 			getValue("clientSideTraffic.bitsIn"),
 			target,
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			ClientSideTrafficBitsOut,
-			prometheus.GaugeValue,
+			prometheus.CounterValue,
 			getValue("clientSideTraffic.bitsOut"),
 			target,
 		))
@@ -412,7 +412,7 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			ClientSideTrafficEvictedConns,
-			prometheus.GaugeValue,
+			prometheus.CounterValue,
 			getValue("clientSideTraffic.evictedConns"),
 			target,
 		))
@@ -438,13 +438,13 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			ClientSideTrafficSlowKilled,
-			prometheus.GaugeValue,
+			prometheus.CounterValue,
 			getValue("clientSideTraffic.slowKilled"),
 			target,
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			ClientSideTrafficTotConns,
-			prometheus.GaugeValue,
+			prometheus.CounterValue,
 			getValue("clientSideTraffic.totConns"),
 			target,
 		))
@@ -463,7 +463,7 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 
 		m = append(m, prometheus.MustNewConstMetric(
 			FiveMinAvgClientSideTrafficBitsIn,
-			prometheus.CounterValue,
+			prometheus.GaugeValue,
 			getValue("fiveMinAvgClientSideTraffic.bitsIn"),
 			target,
 		))
@@ -489,7 +489,7 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			FiveMinAvgClientSideTrafficTotConns,
-			prometheus.CounterValue,
+			prometheus.GaugeValue,
 			getValue("fiveMinAvgClientSideTraffic.totConns"),
 			target,
 		))
@@ -526,7 +526,7 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			FiveSecAvgClientSideTrafficBitsIn,
-			prometheus.CounterValue,
+			prometheus.GaugeValue,
 			getValue("fiveSecAvgClientSideTraffic.bitsIn"),
 			target,
 		))
@@ -550,7 +550,7 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			FiveSecAvgClientSideTrafficTotConns,
-			prometheus.CounterValue,
+			prometheus.GaugeValue,
 			getValue("fiveSecAvgClientSideTraffic.totConns"),
 			target,
 		))
@@ -587,19 +587,19 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 
 		m = append(m, prometheus.MustNewConstMetric(
 			HardwareSyncookiesDetected,
-			prometheus.GaugeValue,
+			prometheus.CounterValue,
 			getValue("hardwareSyncookiesDetected"),
 			target,
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			HardwareSyncookiesGenerated,
-			prometheus.GaugeValue,
+			prometheus.CounterValue,
 			getValue("hardwareSyncookiesGenerated"),
 			target,
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			HttpRequests,
-			prometheus.GaugeValue,
+			prometheus.CounterValue,
 			getValue("httpRequests"),
 			target,
 		))
@@ -678,31 +678,31 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			OneMinAvgServerSideTrafficBitsIn,
-			prometheus.CounterValue,
+			prometheus.GaugeValue,
 			getValue("oneMinAvgServerSideTraffic.bitsIn"),
 			target,
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			OneMinAvgServerSideTrafficBitsOut,
-			prometheus.CounterValue,
+			prometheus.GaugeValue,
 			getValue("oneMinAvgServerSideTraffic.bitsOut"),
 			target,
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			OneMinAvgServerSideTrafficPktsIn,
-			prometheus.CounterValue,
+			prometheus.GaugeValue,
 			getValue("oneMinAvgServerSideTraffic.pktsIn"),
 			target,
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			OneMinAvgServerSideTrafficPktsOut,
-			prometheus.CounterValue,
+			prometheus.GaugeValue,
 			getValue("oneMinAvgServerSideTraffic.pktsOut"),
 			target,
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			OneMinAvgServerSideTrafficTotConns,
-			prometheus.CounterValue,
+			prometheus.GaugeValue,
 			getValue("oneMinAvgServerSideTraffic.totConns"),
 			target,
 		))
@@ -727,7 +727,7 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			ServerSideTrafficCurConns,
-			prometheus.CounterValue,
+			prometheus.GaugeValue,
 			getValue("serverSideTraffic.curConns"),
 			target,
 		))
@@ -739,7 +739,7 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			ServerSideTrafficMaxConns,
-			prometheus.CounterValue,
+			prometheus.GaugeValue,
 			getValue("serverSideTraffic.maxConns"),
 			target,
 		))
@@ -769,7 +769,7 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			TmauthCurSessions,
-			prometheus.CounterValue,
+			prometheus.GaugeValue,
 			getValue("tmauth.curSessions"),
 			target,
 		))
@@ -787,7 +787,7 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			TmauthMaxSessions,
-			prometheus.CounterValue,
+			prometheus.GaugeValue,
 			getValue("tmauth.maxSessions"),
 			target,
 		))
