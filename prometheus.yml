@@ -1,0 +1,18 @@
+global:
+  scrape_interval: 60s
+  scrape_timeout: 45s
+
+scrape_configs:
+  - job_name: 'bigip'
+    metrics_path: /probe
+    static_configs:
+      - targets:
+          - https://192.168.100.10
+          - https://192.168.100.11
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: bigip_exporter:9142

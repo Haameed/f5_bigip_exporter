@@ -1,0 +1,30 @@
+[Unit]
+Description=Prometheus BIG-IP Exporter
+Documentation=https://github.com/Haameed/bigip_exporter
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=bigip_exporter
+Group=bigip_exporter
+ExecStart=/usr/local/bin/bigip_exporter \
+    -config /etc/bigip_exporter/bigip-config.yaml \
+    -listen :9142 \
+    -scrape-timeout 30
+Restart=on-failure
+RestartSec=5s
+
+# --- Hardening ---
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6
+ReadOnlyPaths=/etc/bigip_exporter
+
+[Install]
+WantedBy=multi-user.target

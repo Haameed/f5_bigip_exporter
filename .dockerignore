@@ -1,0 +1,16 @@
+.git
+.github
+*.md
+LICENSE
+Makefile
+Dockerfile
+.dockerignore
+.gitignore
+coverage.out
+coverage.html
+bigip_exporter
+config.yml
+*.yaml
+*.yml
+!config-example.yml
+.vscode

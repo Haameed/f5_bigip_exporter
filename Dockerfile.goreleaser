@@ -1,0 +1,14 @@
+FROM gcr.io/distroless/static-debian12:nonroot
+
+LABEL org.opencontainers.image.title="bigip_exporter" \
+      org.opencontainers.image.description="Prometheus exporter for F5 BIG-IP devices" \
+      org.opencontainers.image.source="https://github.com/Haameed/bigip_exporter" \
+      org.opencontainers.image.licenses="MIT"
+
+COPY bigip_exporter /bin/bigip_exporter
+
+EXPOSE 9142
+USER nonroot:nonroot
+
+ENTRYPOINT ["/bin/bigip_exporter"]
+CMD ["-config", "/etc/bigip_exporter/bigip-config.yaml"]

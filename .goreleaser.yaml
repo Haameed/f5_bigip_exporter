@@ -1,0 +1,85 @@
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: bigip_exporter
+    main: ./cmd/bigip_exporter
+    binary: bigip_exporter
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.buildDate={{.Date}}
+
+archives:
+  - formats: [tar.gz]
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+checksum:
+  name_template: 'checksums.txt'
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+
+# ============================================================
+# Docker images — one per architecture
+# ============================================================
+dockers:
+  - image_templates:
+      - "ghcr.io/haameed/bigip_exporter:{{ .Version }}-amd64"
+      - "ghcr.io/haameed/bigip_exporter:latest-amd64"
+    use: buildx
+    goarch: amd64
+    dockerfile: Dockerfile.goreleaser
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+
+  - image_templates:
+      - "ghcr.io/haameed/bigip_exporter:{{ .Version }}-arm64"
+      - "ghcr.io/haameed/bigip_exporter:latest-arm64"
+    use: buildx
+    goarch: arm64
+    dockerfile: Dockerfile.goreleaser
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+
+# ============================================================
+# Multi-arch manifest — combines amd64 + arm64 under one tag
+# ============================================================
+docker_manifests:
+  - name_template: "ghcr.io/haameed/bigip_exporter:{{ .Version }}"
+    image_templates:
+      - "ghcr.io/haameed/bigip_exporter:{{ .Version }}-amd64"
+      - "ghcr.io/haameed/bigip_exporter:{{ .Version }}-arm64"
+
+  - name_template: "ghcr.io/haameed/bigip_exporter:latest"
+    image_templates:
+      - "ghcr.io/haameed/bigip_exporter:latest-amd64"
+      - "ghcr.io/haameed/bigip_exporter:latest-arm64"
