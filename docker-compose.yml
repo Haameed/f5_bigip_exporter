@@ -5,7 +5,7 @@ services:
     container_name: bigip_exporter
     restart: unless-stopped
     ports:
-      - "9142:9142"
+      - "11000:11000"
     volumes:
       - ./bigip-config.yaml:/etc/bigip_exporter/bigip-config.yaml:ro
     command:

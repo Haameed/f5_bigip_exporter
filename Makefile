@@ -2,8 +2,8 @@
 # BIG-IP Exporter — Makefile
 # ==============================================================================
 
-BINARY      := bigip_exporter
-PKG         := ./cmd/bigip_exporter
+BINARY      := f5_bigip_exporter
+PKG         := ./cmd/f5_bigip_exporter
 VERSION     ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
 COMMIT      := $(shell git rev-parse --short HEAD 2>/dev/null || echo "none")
 DATE        := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
@@ -14,7 +14,7 @@ LDFLAGS     := -s -w \
 
 GO          ?= go
 GOFLAGS     ?=
-DOCKER_IMG  ?= bigip_exporter
+DOCKER_IMG  ?= f5_bigip_exporter
 
 .DEFAULT_GOAL := help
 

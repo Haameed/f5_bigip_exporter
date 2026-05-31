@@ -6,8 +6,8 @@ before:
 
 builds:
   - id: bigip_exporter
-    main: ./cmd/bigip_exporter
-    binary: bigip_exporter
+    main: ./cmd/f5_bigip_exporter
+    binary: f5_bigip_exporter
     env:
       - CGO_ENABLED=0
     goos:
@@ -47,8 +47,8 @@ changelog:
 # ============================================================
 dockers:
   - image_templates:
-      - "ghcr.io/haameed/bigip_exporter:{{ .Version }}-amd64"
-      - "ghcr.io/haameed/bigip_exporter:latest-amd64"
+      - "ghcr.io/haameed/f5_bigip_exporter:{{ .Version }}-amd64"
+      - "ghcr.io/haameed/f5_bigip_exporter:latest-amd64"
     use: buildx
     goarch: amd64
     dockerfile: Dockerfile.goreleaser
@@ -59,8 +59,8 @@ dockers:
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
 
   - image_templates:
-      - "ghcr.io/haameed/bigip_exporter:{{ .Version }}-arm64"
-      - "ghcr.io/haameed/bigip_exporter:latest-arm64"
+      - "ghcr.io/haameed/f5_bigip_exporter:{{ .Version }}-arm64"
+      - "ghcr.io/haameed/f5_bigip_exporter:latest-arm64"
     use: buildx
     goarch: arm64
     dockerfile: Dockerfile.goreleaser
@@ -74,12 +74,12 @@ dockers:
 # Multi-arch manifest — combines amd64 + arm64 under one tag
 # ============================================================
 docker_manifests:
-  - name_template: "ghcr.io/haameed/bigip_exporter:{{ .Version }}"
+  - name_template: "ghcr.io/haameed/f5_bigip_exporter:{{ .Version }}"
     image_templates:
-      - "ghcr.io/haameed/bigip_exporter:{{ .Version }}-amd64"
-      - "ghcr.io/haameed/bigip_exporter:{{ .Version }}-arm64"
+      - "ghcr.io/haameed/f5_bigip_exporter:{{ .Version }}-amd64"
+      - "ghcr.io/haameed/f5_bigip_exporter:{{ .Version }}-arm64"
 
-  - name_template: "ghcr.io/haameed/bigip_exporter:latest"
+  - name_template: "ghcr.io/haameed/f5_bigip_exporter:latest"
     image_templates:
-      - "ghcr.io/haameed/bigip_exporter:latest-amd64"
-      - "ghcr.io/haameed/bigip_exporter:latest-arm64"
+      - "ghcr.io/haameed/f5_bigip_exporter:latest-amd64"
+      - "ghcr.io/haameed/f5_bigip_exporter:latest-arm64"

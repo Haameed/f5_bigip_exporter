@@ -9,7 +9,7 @@ The latest released version receives security updates.
 **Please do not open public issues for security vulnerabilities.**
 
 Instead, report them privately via
-[GitHub Security Advisories](https://github.com/Haameed/bigip_exporter/security/advisories/new)
+[GitHub Security Advisories](https://github.com/Haameed/f5_bigip_exporter/security/advisories/new)
 or by contacting the maintainer directly.
 
 We will acknowledge your report within a reasonable timeframe and keep you

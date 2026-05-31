@@ -36,7 +36,7 @@ type TargetAuth struct {
 var (
 	parameter = BigIpExporterParameter{
 		Config:        flag.String("config", "bigip-config.yaml", "file containing the authentication map to use when connecting to a F5 device"),
-		Listen:        flag.String("listen", ":9142", "address to listen on"),
+		Listen:        flag.String("listen", ":11000", "address to listen on"),
 		ScrapeTimeout: flag.Int("scrape-timeout", 30, "max seconds to allow a scrape to take"),
 		TLSTimeout:    flag.Int("https-timeout", 10, "TLS Handshake timeout in seconds"),
 		TLSInsecure:   flag.Bool("insecure", false, "Skip TLS certificate verification"),

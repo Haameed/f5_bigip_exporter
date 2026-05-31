@@ -21,20 +21,20 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
       -X main.version=${VERSION} \
       -X main.commit=${COMMIT} \
       -X main.buildDate=${BUILD_DATE}" \
-    -o /bin/bigip_exporter ./cmd/bigip_exporter
+    -o /bin/f5_bigip_exporter ./cmd/bigip_exporter
 
 # ---- Runtime stage ----
 FROM gcr.io/distroless/static-debian12:nonroot
 
-LABEL org.opencontainers.image.title="bigip_exporter" \
+LABEL org.opencontainers.image.title="f5_bigip_exporter" \
       org.opencontainers.image.description="Prometheus exporter for F5 BIG-IP devices" \
-      org.opencontainers.image.source="https://github.com/Haameed/bigip_exporter" \
+      org.opencontainers.image.source="https://github.com/Haameed/f5_bigip_exporter" \
       org.opencontainers.image.licenses="MIT"
 
-COPY --from=build /bin/bigip_exporter /bin/bigip_exporter
+COPY --from=build /bin/f5_bigip_exporter /bin/f5_bigip_exporter
 
-EXPOSE 9142
+EXPOSE 11000
 USER nonroot:nonroot
 
-ENTRYPOINT ["/bin/bigip_exporter"]
+ENTRYPOINT ["/bin/f5_bigip_exporter"]
 CMD ["-config", "/etc/bigip_exporter/bigip-config.yaml"]

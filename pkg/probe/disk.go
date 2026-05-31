@@ -3,7 +3,7 @@ package probe
 import (
 	"log"
 
-	"github.com/Haameed/bigip_exporter/pkg/http"
+	"github.com/Haameed/f5_bigip_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
 )
 

@@ -10,7 +10,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/Haameed/bigip_exporter/internal/config"
+	"github.com/Haameed/f5_bigip_exporter/internal/config"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {

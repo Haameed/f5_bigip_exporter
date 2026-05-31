@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/Haameed/bigip_exporter/internal/config"
+	"github.com/Haameed/f5_bigip_exporter/internal/config"
 )
 
 func TestProbe(t *testing.T) {

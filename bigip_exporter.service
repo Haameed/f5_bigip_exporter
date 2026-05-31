@@ -1,6 +1,6 @@
 [Unit]
 Description=Prometheus BIG-IP Exporter
-Documentation=https://github.com/Haameed/bigip_exporter
+Documentation=https://github.com/Haameed/f5_bigip_exporter
 After=network-online.target
 Wants=network-online.target
 
@@ -8,9 +8,9 @@ Wants=network-online.target
 Type=simple
 User=bigip_exporter
 Group=bigip_exporter
-ExecStart=/usr/local/bin/bigip_exporter \
-    -config /etc/bigip_exporter/bigip-config.yaml \
-    -listen :9142 \
+ExecStart=/usr/local/bin/f5_bigip_exporter \
+    -config /etc/f5_bigip_exporter/bigip-config.yaml \
+    -listen :11000 \
     -scrape-timeout 30
 Restart=on-failure
 RestartSec=5s

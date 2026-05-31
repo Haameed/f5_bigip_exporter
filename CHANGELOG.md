@@ -47,7 +47,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Multi-target `/probe` endpoint with concurrent scraping.
 - Token-based authentication against the BIG-IP `tmos` login provider.
 - Multi-arch Docker images (amd64/arm64) automatically built and published to
-  GitHub Container Registry (`ghcr.io/haameed/bigip_exporter`) on every release.
+  GitHub Container Registry (`ghcr.io/haameed/f5_bigip_exporter`) on every release.
 
-[Unreleased]: https://github.com/Haameed/bigip_exporter/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/Haameed/bigip_exporter/releases/tag/v0.1.0
+[Unreleased]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/Haameed/f5_bigip_exporter/releases/tag/v0.1.0
+[0.2.0]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.1.0...v0.2.0
+## [0.2.0]
+
+### Changed
+- **BREAKING**: Renamed the project from `bigip_exporter` to `f5_bigip_exporter`
+  to avoid naming collisions with existing BIG-IP exporters in the Prometheus
+  ecosystem. The Go module path, binary name, and Docker image path have all
+  changed accordingly:
+  - Module: `github.com/Haameed/f5_bigip_exporter`
+  - Image: `ghcr.io/haameed/f5_bigip_exporter`
+- **BREAKING**: Default listen port changed from `9142` to `11000` to use a
+  dedicated, non-conflicting port. Update your scrape configs and deployments.

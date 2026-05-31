@@ -1,4 +1,4 @@
-module github.com/Haameed/bigip_exporter
+module github.com/Haameed/f5_bigip_exporter
 
 go 1.25.1
 

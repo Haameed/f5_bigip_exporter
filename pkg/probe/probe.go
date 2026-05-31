@@ -9,8 +9,8 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/Haameed/bigip_exporter/internal/config"
-	bigIPHTTP "github.com/Haameed/bigip_exporter/pkg/http"
+	"github.com/Haameed/f5_bigip_exporter/internal/config"
+	bigIPHTTP "github.com/Haameed/f5_bigip_exporter/pkg/http"
 )
 
 type Collector struct {

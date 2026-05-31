@@ -8,8 +8,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/Haameed/bigip_exporter/internal/config"
-	"github.com/Haameed/bigip_exporter/internal/utils"
+	"github.com/Haameed/f5_bigip_exporter/internal/config"
+	"github.com/Haameed/f5_bigip_exporter/internal/utils"
 )
 
 type BigIPHTTP interface {

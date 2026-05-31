@@ -191,9 +191,9 @@ Label: `target`. Includes client/server-side throughput, packets, connections (c
 Requires **Go 1.25+**.
 
 ```bash
-git clone https://github.com/Haameed/bigip_exporter.git
-cd bigip_exporter
-go build -o bigip_exporter ./cmd/bigip_exporter
+git clone https://github.com/Haameed/f5_bigip_exporter.git
+cd f5_bigip_exporter
+go build -o f5_bigip_exporter ./cmd/f5_bigip_exporter
 ```
 
 ### Docker
@@ -202,14 +202,14 @@ go build -o bigip_exporter ./cmd/bigip_exporter
 Pre-built multi-arch images (amd64 / arm64) are published on every release:
 
 ```bash
-docker pull ghcr.io/haameed/bigip_exporter:latest
+docker pull ghcr.io/haameed/f5_bigip_exporter:latest
 # or a specific version:
-docker pull ghcr.io/haameed/bigip_exporter:v0.2.0
+docker pull ghcr.io/haameed/f5_bigip_exporter:v0.2.0
 # Run it:
-docker run -d --name bigip_exporter \
-  -p 9142:9142 \
-  -v "$(pwd)/bigip-config.yaml:/etc/bigip_exporter/bigip-config.yaml:ro" \
-  ghcr.io/haameed/bigip_exporter:latest -insecure
+docker run -d --name f5_bigip_exporter \
+  -p 11000:11000 \
+  -v "$(pwd)/bigip-config.yaml:/etc/f5_bigip_exporter/bigip-config.yaml:ro" \
+  ghcr.io/haameed/f5_bigip_exporter:latest -insecure
 
 A minimal multi-stage `Dockerfile`:
 
@@ -218,22 +218,22 @@ A minimal multi-stage `Dockerfile`:
 FROM golang:1.25 AS build
 WORKDIR /src
 COPY . .
-RUN CGO_ENABLED=0 go build -o /bin/bigip_exporter ./cmd/bigip_exporter
+RUN CGO_ENABLED=0 go build -o /bin/f5_bigip_exporter ./cmd/f5_bigip_exporter
 
 # ---- runtime ----
 FROM gcr.io/distroless/static-debian12
-COPY --from=build /bin/bigip_exporter /bin/bigip_exporter
-EXPOSE 9142
-ENTRYPOINT ["/bin/bigip_exporter"]
-CMD ["-config", "/etc/bigip_exporter/bigip-config.yaml"]
+COPY --from=build /bin/f5_bigip_exporter /bin/f5_bigip_exporter
+EXPOSE 11000
+ENTRYPOINT ["/bin/f5_bigip_exporter"]
+CMD ["-config", "/etc/f5_bigip_exporter/bigip-config.yaml"]
 ```
 
 ```bash
-docker build -t bigip_exporter .
-docker run -d --name bigip_exporter \
-  -p 9142:9142 \
-  -v "$(pwd)/bigip-config.yaml:/etc/bigip_exporter/bigip-config.yaml:ro" \
-  bigip_exporter -insecure
+docker build -t f5_bigip_exporter .
+docker run -d --name f5_bigip_exporter \
+  -p 11000:11000 \
+  -v "$(pwd)/bigip-config.yaml:/etc/f5_bigip_exporter/bigip-config.yaml:ro" \
+  f5_bigip_exporter -insecure
 ```
 
 ---
@@ -267,7 +267,7 @@ https://192.168.100.11:
 | Flag             | Default              | Description |
 |------------------|----------------------|-------------|
 | `-config`        | `bigip-config.yaml`  | Path to the credentials YAML file |
-| `-listen`        | `:9142`              | Address the HTTP server listens on |
+| `-listen`        | `:11000`              | Address the HTTP server listens on |
 | `-scrape-timeout`| `30`                 | Maximum seconds allowed for a single scrape |
 | `-https-timeout` | `10`                 | TLS handshake timeout in seconds |
 | `-insecure`      | `false`              | Skip TLS certificate verification (useful for self-signed BIG-IP certs) |
@@ -277,13 +277,13 @@ https://192.168.100.11:
 ## Running the Exporter
 
 ```bash
-./bigip_exporter -config bigip-config.yaml -insecure
+./f5_bigip_exporter -config bigip-config.yaml -insecure
 ```
 
 Test a probe manually:
 
 ```bash
-curl 'http://localhost:9142/probe?target=https://192.168.100.10'
+curl 'http://localhost:11000/probe?target=https://192.168.100.10'
 ```
 
 You should see Prometheus-formatted metrics, ending with `probe_success 1`.
@@ -311,7 +311,7 @@ scrape_configs:
         target_label: instance
       # Point the actual scrape at the exporter
       - target_label: __address__
-        replacement: localhost:9142
+        replacement: localhost:11000
 ```
 
 ---
@@ -356,7 +356,7 @@ No configuration is required — caching is automatic.
 
 ```
 .
-├── cmd/bigip_exporter      # main entrypoint
+├── cmd/f5_bigip_exporter      # main entrypoint
 ├── internal
 │   ├── config              # flag parsing + YAML credentials loading
 │   └── utils               # F5 token authentication
@@ -389,7 +389,7 @@ go test ./...
 
 **Everyone is welcome to participate and contribute!** 🎉
 
-- 🐛 Found a bug? [Open an issue](https://github.com/Haameed/bigip_exporter/issues).
+- 🐛 Found a bug? [Open an issue](https://github.com/Haameed/f5_bigip_exporter/issues).
 - 💡 Have a feature idea or a new metric to expose? Open an issue to discuss it.
 - 🔧 Submit Pull Requests — please run `go fmt ./...`, `go vet ./...`, and `go test ./...` before opening.
 

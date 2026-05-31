@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/Haameed/bigip_exporter/internal/utils"
+	"github.com/Haameed/f5_bigip_exporter/internal/utils"
 )
 
 type Client interface {

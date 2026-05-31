@@ -19,7 +19,7 @@ By participating, you are expected to uphold it.
 
 ## How Can I Contribute?
 
-- 🐛 **Report bugs** — open an [issue](https://github.com/Haameed/bigip_exporter/issues)
+- 🐛 **Report bugs** — open an [issue](https://github.com/Haameed/f5_bigip_exporter/issues)
   with steps to reproduce, your BIG-IP version (TMOS), and exporter version.
 - 💡 **Suggest features / new metrics** — describe the iControl REST endpoint and
   the metrics you'd like to see.
@@ -28,7 +28,7 @@ By participating, you are expected to uphold it.
 
 ## Development Setup
 
-    git clone https://github.com/Haameed/bigip_exporter.git
+    git clone https://github.com/Haameed/f5_bigip_exporter.git
     cd bigip_exporter
     make build
     make test
