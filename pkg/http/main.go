@@ -23,11 +23,11 @@ func NewBigIPClient(ctx context.Context, tgt url.URL, hc *http.Client, aConfig c
 	}
 	token, err := utils.GetToken(tgt.String(), auth.UserName, auth.Password, aConfig.TLSInsecure, time.Duration(aConfig.ScrapeTimeout))
 	if err != nil {
-		return nil, fmt.Errorf("Failed to obtain token: %w", err)
+		return nil, fmt.Errorf("failed to obtain token: %w", err)
 	}
 	if token.Token != "" {
 		if tgt.Scheme != "https" {
-			return nil, fmt.Errorf("We are Using token, So please use HTTPS scheme for %q", tgt.String())
+			return nil, fmt.Errorf("we are Using token, So please use HTTPS scheme for %q", tgt.String())
 		}
 		c, err := newBigIPTokenClient(ctx, tgt, hc, token)
 		if err != nil {

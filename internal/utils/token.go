@@ -71,12 +71,12 @@ func GetTokenFromF5(url, username, password string, insecure bool, timeout time.
 
 	jsonData, err := json.Marshal(loginPayload)
 	if err != nil {
-		return TokenDetails{}, fmt.Errorf("Error marshaling login payload: %w", err)
+		return TokenDetails{}, fmt.Errorf("error marshaling login payload: %w", err)
 	}
 
 	req, err := http.NewRequest("POST", loginURL, bytes.NewBuffer(jsonData))
 	if err != nil {
-		return TokenDetails{}, fmt.Errorf("Error creating login request: %w", err)
+		return TokenDetails{}, fmt.Errorf("error creating login request: %w", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 
@@ -84,7 +84,7 @@ func GetTokenFromF5(url, username, password string, insecure bool, timeout time.
 	if err != nil {
 		return TokenDetails{}, fmt.Errorf("login request failed: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {

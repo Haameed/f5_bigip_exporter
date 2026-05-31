@@ -378,13 +378,6 @@ func GetVirtualServersProbe(c http.BigIPHTTP, target string) ([]prometheus.Metri
 		SelfLink string          `json:"selfLink"`
 		Items    []VirtaulServer `json:"items"`
 	}
-	type job struct {
-		vs VirtaulServer
-	}
-
-	type result struct {
-		metrics []prometheus.Metric
-	}
 
 	type vsInfo struct {
 		vs      VirtaulServer

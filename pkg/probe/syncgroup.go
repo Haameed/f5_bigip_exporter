@@ -223,10 +223,4 @@ func trafficGroupStateToValue(state string) int {
 		return 0
 	}
 }
-func boolStringToValue(s string) int {
-	s = strings.ToLower(s)
-	if s == "true" {
-		return 1
-	}
-	return 0
-}
+
