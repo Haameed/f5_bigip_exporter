@@ -100,7 +100,7 @@ func GetTokenFromF5(url, username, password string, insecure bool, timeout time.
 		return TokenDetails{}, fmt.Errorf("error decoding login response: %w", err)
 	}
 
-	log.Printf("Authentication token obtained from %s. (expires in %d seconds)\n", url, loginResp.Token.Timeout)
+	log.Printf("New authentication token obtained from %s (expires in %d seconds)", url, loginResp.Token.Timeout)
 
 	return loginResp.Token, nil
 }
