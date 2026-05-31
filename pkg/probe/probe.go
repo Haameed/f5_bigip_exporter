@@ -96,7 +96,12 @@ func (p *Collector) Collect(c chan<- prometheus.Metric) {
 	}
 }
 
-func (p *Collector) Describe(_ chan<- *prometheus.Desc) {
-	// TODO: Register metric descriptions here (better practice)
-
-}
+// Describe is intentionally left empty.
+//
+// This is a multi-target exporter (the /probe pattern, like blackbox_exporter
+// and snmp_exporter): the set of metrics depends on the scraped target and is
+// not known ahead of time. Sending no descriptors marks this as an
+// "unchecked" collector, which is the documented and correct approach here.
+//
+// See: https://pkg.go.dev/github.com/prometheus/client_golang/prometheus#Collector
+func (p *Collector) Describe(_ chan<- *prometheus.Desc) {}
