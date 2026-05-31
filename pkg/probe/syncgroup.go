@@ -223,4 +223,3 @@ func trafficGroupStateToValue(state string) int {
 		return 0
 	}
 }
-
