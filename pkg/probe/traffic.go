@@ -673,7 +673,7 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 		m = append(m, prometheus.MustNewConstMetric(
 			OneMinAvgClientSideTrafficTotConns,
 			prometheus.CounterValue,
-			getValue("oneMinAvgClientSideTraffic.totConn"),
+			getValue("oneMinAvgClientSideTraffic.totConns"),
 			target,
 		))
 		m = append(m, prometheus.MustNewConstMetric(
