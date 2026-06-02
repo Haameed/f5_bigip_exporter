@@ -42,6 +42,9 @@ It follows the standard [multi-target exporter pattern](https://prometheus.io/do
   - **SSL Certificates** — expiration timestamp & days remaining, expired flag, key size, bundle status.
   - **HA / Sync-Failover** — sync status, failover status & color, traffic-group state.
   - **Global Traffic** — client/server-side throughput, packet errors, denies, TMAuth sessions, HTTP requests.
+  - **TMM** — core engine CPU/memory load.
+  - **Nodes** — per-node traffic, connections, and health state.
+  - **Client-SSL** — handshake success/failure, TLS version usage, session cache.
 - 🏷️ Consistent `target` label on every metric for easy multi-device dashboards.
 - 🩺 Built-in `probe_success` and `probe_duration_seconds` metrics per scrape.
 - 🔑 **Token-based authentication with caching** — uses the BIG-IP `tmos` login
@@ -182,6 +185,69 @@ Labels: `target`, `name`, `partition` (plus `key_type`, `expiration_date` on som
 
 Label: `target`. Includes client/server-side throughput, packets, connections (current/max/total/evicted/slow-killed), 5s/1m/5m averages, `bigip_dropped_packets`, `bigip_HttpRequests`, packet errors, various deny counters, and TMAuth session/result metrics.
 
+### TMM (`bigip_tmm_*`)
+
+Labels: `target`, `tmm_id`. TMM is the core traffic-processing engine of BIG-IP.
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `bigip_tmm_cpu_usage_ratio` | gauge | TMM CPU usage ratio |
+| `bigip_tmm_five_sec_avg_usage_ratio` | gauge | CPU usage averaged over 5 seconds |
+| `bigip_tmm_one_min_avg_usage_ratio` | gauge | CPU usage averaged over 1 minute |
+| `bigip_tmm_five_min_avg_usage_ratio` | gauge | CPU usage averaged over 5 minutes |
+| `bigip_tmm_memory_total_bytes` | gauge | Total memory allocated to TMM |
+| `bigip_tmm_memory_used_bytes` | gauge | Memory used by TMM |
+| `bigip_tmm_npus` | gauge | Number of Network Processing Units |
+
+### Nodes (`bigip_node_*`)
+
+Labels: `target`, `node`, `partition`, `address`.
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `bigip_node_current_sessions` | gauge | Current sessions |
+| `bigip_node_serverside_bits_in_total` / `_out_total` | counter | Server-side throughput |
+| `bigip_node_serverside_current_connections` | gauge | Current connections |
+| `bigip_node_serverside_max_connections` | gauge | Max connections |
+| `bigip_node_serverside_total_connections` | counter | Total connections |
+| `bigip_node_serverside_packets_in_total` / `_out_total` | counter | Server-side packets |
+| `bigip_node_total_requests` | counter | Total requests |
+| `bigip_node_monitor_status` | gauge | `0`=down, `1`=up, `2`=unchecked |
+| `bigip_node_availability_state` | gauge | `0`=offline, `1`=unknown, `2`=available |
+| `bigip_node_enabled_state` | gauge | `0`=disabled, `1`=enabled |
+
+### Client-SSL Profiles (`bigip_clientssl_*`)
+
+Labels: `target`, `profile`, `partition`. Protocol-usage metric adds a
+`protocol` label.
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `bigip_clientssl_handshake_failures_total` | counter | Failed SSL handshakes |
+| `bigip_clientssl_secure_handshakes_total` | counter | Successful secure handshakes (basis for SSL TPS) |
+| `bigip_clientssl_insecure_handshake_accepts_total` | counter | Insecure handshakes accepted |
+| `bigip_clientssl_insecure_handshake_rejects_total` | counter | Insecure handshakes rejected |
+| `bigip_clientssl_fatal_alerts_total` | counter | Fatal TLS alerts |
+| `bigip_clientssl_current_active_handshakes` | gauge | Handshakes currently in progress |
+| `bigip_clientssl_current_native_connections` | gauge | Current native SSL connections |
+| `bigip_clientssl_max_native_connections` | gauge | Max native SSL connections |
+| `bigip_clientssl_encrypted_bytes_in_total` / `_out_total` | counter | Encrypted throughput |
+| `bigip_clientssl_decrypted_bytes_in_total` / `_out_total` | counter | Decrypted throughput |
+| `bigip_clientssl_session_cache_hits_total` | counter | SSL session cache hits |
+| `bigip_clientssl_session_cache_lookups_total` | counter | SSL session cache lookups |
+| `bigip_clientssl_protocol_uses_total` | counter | Handshakes per TLS/SSL version (label `protocol`: `SSLv2`, `SSLv3`, `TLSv1.0`, `TLSv1.1`, `TLSv1.2`, `TLSv1.3`) |
+
+#### Useful queries
+
+```promql
+# SSL handshake failure rate
+rate(bigip_clientssl_handshake_failures_total[5m])
+
+# SSL TPS (successful handshakes per second)
+rate(bigip_clientssl_secure_handshakes_total[5m])
+
+# Alert on legacy/insecure protocol usage
+rate(bigip_clientssl_protocol_uses_total{protocol=~"SSLv.*|TLSv1.0|TLSv1.1"}[5m]) > 0
 ---
 
 ## Installation

@@ -63,3 +63,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Image: `ghcr.io/haameed/f5_bigip_exporter`
 - **BREAKING**: Default listen port changed from `9142` to `11000` to use a
   dedicated, non-conflicting port. Update your scrape configs and deployments.
+- TMM (Traffic Management Microkernel) metrics: per-TMM CPU usage ratios
+  (5s/1m/5m averages), memory (total/used bytes), and NPU count
+  (`/mgmt/tm/sys/tmm-info/stats`). TMM CPU is the primary indicator of traffic
+  processing load on BIG-IP.
+- Node metrics (`/mgmt/tm/ltm/node/stats`): per-node sessions, server-side
+  traffic/connections/packets, total requests, and monitor/availability/enabled
+  state. Nodes are tracked independently of pool membership.
+- Client-SSL profile metrics (`/mgmt/tm/ltm/profile/client-ssl/stats`):
+  handshake failures/successes, fatal alerts, insecure handshake accepts,
+  active/native connections, encrypted/decrypted throughput, session cache
+  stats, and per-version TLS/SSL protocol usage (via a `protocol` label).
