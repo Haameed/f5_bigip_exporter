@@ -74,3 +74,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   handshake failures/successes, fatal alerts, insecure handshake accepts,
   active/native connections, encrypted/decrypted throughput, session cache
   stats, and per-version TLS/SSL protocol usage (via a `protocol` label).
+- Hardware sensor metrics (`/mgmt/tm/sys/hardware`): fan status, power-supply
+  status, temperature (with high limit), and humidity. Includes a
+  `bigip_hardware_available` gauge that distinguishes hardware appliances from
+  Virtual Edition / vCMP guests — the probe gracefully reports unavailable
+  instead of failing on VE.
+- `bigip_device_info` metric (constant `1` with metadata in labels:
+  marketing name, platform, chassis serial, base MAC, BIOS revision) following
+  the standard Prometheus info-metric pattern for Grafana joins.
