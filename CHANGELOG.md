@@ -52,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [Unreleased]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/Haameed/f5_bigip_exporter/releases/tag/v0.1.0
 [0.2.0]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.1.0...v0.2.0
+
 ## [0.2.0]
 
 ### Changed
@@ -67,6 +68,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (5s/1m/5m averages), memory (total/used bytes), and NPU count
   (`/mgmt/tm/sys/tmm-info/stats`). TMM CPU is the primary indicator of traffic
   processing load on BIG-IP.
+
+## [0.3.0]
+
+### Changed
 - Node metrics (`/mgmt/tm/ltm/node/stats`): per-node sessions, server-side
   traffic/connections/packets, total requests, and monitor/availability/enabled
   state. Nodes are tracked independently of pool membership.
