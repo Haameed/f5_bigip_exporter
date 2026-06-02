@@ -45,6 +45,8 @@ It follows the standard [multi-target exporter pattern](https://prometheus.io/do
   - **TMM** — core engine CPU/memory load.
   - **Nodes** — per-node traffic, connections, and health state.
   - **Client-SSL** — handshake success/failure, TLS version usage, session cache.
+  - **Hardware** — fan/PSU/temperature/humidity sensors and a device-info metric (appliance only; gracefully skipped on VE).
+
 - 🏷️ Consistent `target` label on every metric for easy multi-device dashboards.
 - 🩺 Built-in `probe_success` and `probe_duration_seconds` metrics per scrape.
 - 🔑 **Token-based authentication with caching** — uses the BIG-IP `tmos` login
@@ -301,7 +303,32 @@ docker run -d --name f5_bigip_exporter \
   -v "$(pwd)/bigip-config.yaml:/etc/f5_bigip_exporter/bigip-config.yaml:ro" \
   f5_bigip_exporter -insecure
 ```
+### Hardware (`bigip_hardware_*`, `bigip_device_info`)
 
+Physical sensor metrics. **Only available on hardware appliances** — on Virtual
+Edition or vCMP guests, `bigip_hardware_available` is `0` and sensor metrics are
+omitted (the probe does not fail).
+
+Labels: `target` (plus sensor-specific labels).
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `bigip_hardware_available` | gauge | `1`=hardware appliance, `0`=VE/vCMP guest |
+| `bigip_hardware_fan_status` | gauge | Fan status `1`=up, `0`=not up (label: `index`) |
+| `bigip_hardware_power_supply_status` | gauge | PSU status `1`=up, `0`=not up (labels: `index`, `current_status`) |
+| `bigip_hardware_temperature_celsius` | gauge | Temperature in °C (labels: `index`, `location`) |
+| `bigip_hardware_temperature_high_limit_celsius` | gauge | High temperature limit in °C |
+| `bigip_hardware_humidity_percent` | gauge | Chassis humidity (%) |
+| `bigip_device_info` | gauge | Constant `1`; device metadata in labels: `marketing_name`, `platform`, `chassis_serial`, `base_mac`, `bios_revision` |
+
+#### Using the info metric in Grafana
+
+`bigip_device_info` follows the standard Prometheus "info metric" pattern. Join
+it onto other metrics to enrich them with device metadata:
+
+```promql
+bigip_tmm_cpu_usage_ratio
+  * on(target) group_left(marketing_name, platform) bigip_device_info
 ---
 
 ## Configuration
