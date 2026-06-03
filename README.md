@@ -491,7 +491,13 @@ When contributing metrics, follow the
 (base units, `_total` for counters, descriptive `HELP` text).
 
 ---
+## Alerting
 
+A complete set of recommended alerts (for both Prometheus and Grafana) is
+documented in [`alerts/README.md`](alerts/README.md), covering availability,
+system load, TMM, HA, virtual servers, pools/nodes, client-SSL, certificates,
+and hardware sensors.
+---
 ## License
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
