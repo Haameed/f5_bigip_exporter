@@ -88,10 +88,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   marketing name, platform, chassis serial, base MAC, BIOS revision) following
   the standard Prometheus info-metric pattern for Grafana joins.
 
-## [0.3.1]
+## [0.4.0]
 
-### Changed
 ### Added
-- Alerting guide (`alerts/README.md`) with recommended Prometheus/Grafana
-  alerts for all metric families, including a volume-independent SSL handshake
-  failure-ratio alert suitable for high-traffic environments.
+- Comprehensive Grafana dashboard (`grafana/f5_bigip_exporter.json`) covering
+  all metric families, with a templated data source for easy import.
+- Unified alerting guide (`alerts/README.md`) with recommended Prometheus and
+  Grafana alerts, including a volume-independent SSL handshake failure-ratio
+  alert suitable for high-traffic environments.
