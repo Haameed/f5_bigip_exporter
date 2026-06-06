@@ -98,8 +98,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   alert suitable for high-traffic environments.
 
 ## [0.5.0]
+
 ### Added
-- Cipher-strength metrics for client-ssl profiles
-  (`bigip_clientssl_cipher_uses_total` with `strength` and `cipher` labels),
-  enabling detection of weak/insecure cipher usage (DES, RC4, NULL, MD5).
-  Sourced from the existing client-ssl stats endpoint — no additional load.
+- HTTP profile metrics (`/mgmt/tm/ltm/profile/http/stats`): responses by status
+  class (2xx–5xx), requests by method, and requests by HTTP version — enabling
+  application-level error-rate monitoring.
+- TCP profile metrics (`/mgmt/tm/ltm/profile/tcp/stats`): open connections,
+  accepts, connection failures, retransmits, bad segments, and resets as
+  network-quality indicators.
+- Device metrics (`/mgmt/tm/cm/device/stats`): per-device HA failover state and
+  load factor.
+- Cipher-strength metrics for client-ssl (`bigip_clientssl_cipher_uses_total`
+  with `strength`/`cipher` labels) for weak-cipher detection.
+- Dashboard panels and alerts for HTTP 5xx error ratio, TCP retransmits, device
+  failover changes, and weak-cipher usage.
+
+### Notes
+- Client RTT and server response time are not exposed via iControl REST stats;
+  HTTP response-code ratios and TCP retransmit rates provide equivalent
+  application/network health signals instead.
+
+[0.5.0]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.4.0...v0.5.0
