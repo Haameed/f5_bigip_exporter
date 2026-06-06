@@ -85,6 +85,11 @@ func GetClientSSLProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bo
 			"Total handshakes per SSL/TLS protocol version",
 			[]string{"target", "profile", "partition", "protocol"}, nil,
 		)
+		sslCipherUses = prometheus.NewDesc(
+			"bigip_clientssl_cipher_uses_total",
+			"Cipher usage by strength category",
+			[]string{"target", "profile", "partition", "strength", "cipher"}, nil,
+		)
 	)
 
 	type ClientSSLStatsEntry struct {
@@ -109,6 +114,16 @@ func GetClientSSLProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bo
 		ProtocolTLSv1_2          ValueBased  `json:"common.protocolUses.tlsv1_2"`
 		ProtocolTLSv1_3          ValueBased  `json:"common.protocolUses.tlsv1_3"`
 		TmName                   StringBased `json:"tmName"`
+		// Weak ciphers
+		CipherDesBulk    ValueBased `json:"common.cipherUses.desBulk"`
+		CipherRc4Bulk    ValueBased `json:"common.cipherUses.rc4Bulk"`
+		CipherNullBulk   ValueBased `json:"common.cipherUses.nullBulk"`
+		CipherMd5Digest  ValueBased `json:"common.cipherUses.md5Digest"`
+		CipherNullDigest ValueBased `json:"common.cipherUses.nullDigest"`
+		// Strong ciphers
+		CipherAesGcmBulk ValueBased `json:"common.cipherUses.aesGcmBulk"`
+		CipherAesBulk    ValueBased `json:"common.cipherUses.aesBulk"`
+		CipherChacha20   ValueBased `json:"common.cipherUses.chacha20Poly1305Bulk"`
 	}
 
 	type ClientSSLNested struct {
@@ -157,6 +172,14 @@ func GetClientSSLProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bo
 		m = append(m, prometheus.MustNewConstMetric(sslProtocolUses, prometheus.CounterValue, float64(stats.ProtocolTLSv1_1.Value), target, profile, partition, "TLSv1.1"))
 		m = append(m, prometheus.MustNewConstMetric(sslProtocolUses, prometheus.CounterValue, float64(stats.ProtocolTLSv1_2.Value), target, profile, partition, "TLSv1.2"))
 		m = append(m, prometheus.MustNewConstMetric(sslProtocolUses, prometheus.CounterValue, float64(stats.ProtocolTLSv1_3.Value), target, profile, partition, "TLSv1.3"))
+		// Weak ciphers
+		m = append(m, prometheus.MustNewConstMetric(sslCipherUses, prometheus.CounterValue, float64(stats.CipherDesBulk.Value), target, profile, partition, "weak", "des"))
+		m = append(m, prometheus.MustNewConstMetric(sslCipherUses, prometheus.CounterValue, float64(stats.CipherRc4Bulk.Value), target, profile, partition, "weak", "rc4"))
+		m = append(m, prometheus.MustNewConstMetric(sslCipherUses, prometheus.CounterValue, float64(stats.CipherNullBulk.Value), target, profile, partition, "weak", "null"))
+		m = append(m, prometheus.MustNewConstMetric(sslCipherUses, prometheus.CounterValue, float64(stats.CipherMd5Digest.Value), target, profile, partition, "weak", "md5"))
+		// Strong ciphers
+		m = append(m, prometheus.MustNewConstMetric(sslCipherUses, prometheus.CounterValue, float64(stats.CipherAesGcmBulk.Value), target, profile, partition, "strong", "aes-gcm"))
+		m = append(m, prometheus.MustNewConstMetric(sslCipherUses, prometheus.CounterValue, float64(stats.CipherChacha20.Value), target, profile, partition, "strong", "chacha20"))
 	}
 
 	return m, true

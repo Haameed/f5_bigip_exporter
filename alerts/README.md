@@ -210,6 +210,16 @@ rate(bigip_clientssl_fatal_alerts_total[5m]) > 10
 ```
 **For:** `5m`
 
+### Weak Cipher in Use — `warning`
+> Detects negotiation of insecure ciphers (DES, RC4, NULL, MD5). The data comes
+> from the same client-ssl endpoint — no extra load.
+
+```promql
+sum by (instance, profile, cipher) (
+  rate(bigip_clientssl_cipher_uses_total{strength="weak"}[15m])
+) > 0
+For: 15m
+Description: Profile {{ $labels.profile }} is negotiating weak cipher '{{ $labels.cipher }}'.
 ---
 
 ## Certificates

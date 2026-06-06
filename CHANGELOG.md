@@ -96,3 +96,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unified alerting guide (`alerts/README.md`) with recommended Prometheus and
   Grafana alerts, including a volume-independent SSL handshake failure-ratio
   alert suitable for high-traffic environments.
+
+## [0.5.0]
+### Added
+- Cipher-strength metrics for client-ssl profiles
+  (`bigip_clientssl_cipher_uses_total` with `strength` and `cipher` labels),
+  enabling detection of weak/insecure cipher usage (DES, RC4, NULL, MD5).
+  Sourced from the existing client-ssl stats endpoint — no additional load.
