@@ -61,6 +61,9 @@ func (p *Collector) Probe(ctx context.Context, target map[string]string, hc *htt
 		{"Nodes", GetNodeProbe},
 		{"ClientSSL", GetClientSSLProbe},
 		{"Hardware", GetHardwareProbe},
+		{"HTTPProfile", GetHTTPProfileProbe},
+		{"TCPProfile", GetTCPProfileProbe},
+		{"Device", GetDeviceProbe},
 	}
 
 	success := true

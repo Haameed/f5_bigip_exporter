@@ -52,6 +52,8 @@ It follows the standard [multi-target exporter pattern](https://prometheus.io/do
 - 🔑 **Token-based authentication with caching** — uses the BIG-IP `tmos` login
   provider; tokens are cached and reused until shortly before they expire, so
   repeated scrapes don't hammer the device with new logins.
+- **HTTP/TCP profiles** — response codes (2xx–5xx), HTTP versions, TCP retransmits & failures.
+- **Devices** — per-device HA failover state.
 
 ---
 
@@ -239,6 +241,40 @@ Labels: `target`, `profile`, `partition`. Protocol-usage metric adds a
 | `bigip_clientssl_session_cache_lookups_total` | counter | SSL session cache lookups |
 | `bigip_clientssl_protocol_uses_total` | counter | Handshakes per TLS/SSL version (label `protocol`: `SSLv2`, `SSLv3`, `TLSv1.0`, `TLSv1.1`, `TLSv1.2`, `TLSv1.3`) |
 | `bigip_clientssl_cipher_uses_total` | counter | Cipher usage by category (labels: `strength` = `weak`/`strong`, `cipher`) |
+
+### HTTP Profiles (`bigip_http_*`)
+
+Labels: `target`, `profile`, `partition`.
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `bigip_http_profile_requests_total` | counter | Total HTTP requests handled |
+| `bigip_http_responses_total` | counter | Responses by status class (label `code`: `2xx`/`3xx`/`4xx`/`5xx`) |
+| `bigip_http_requests_by_method_total` | counter | Requests by method (label `method`: `GET`/`POST`) |
+| `bigip_http_requests_by_version_total` | counter | Requests by protocol version (label `version`: `0.9`–`3.0`) |
+
+### TCP Profiles (`bigip_tcp_*`)
+
+Labels: `target`, `profile`, `partition`.
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `bigip_tcp_open_connections` | gauge | Current open TCP connections |
+| `bigip_tcp_accepts_total` | counter | Accepted TCP connections |
+| `bigip_tcp_connection_failures_total` | counter | TCP connection failures |
+| `bigip_tcp_retransmits_total` | counter | TCP retransmits (network-quality indicator) |
+| `bigip_tcp_received_bad_segments_total` | counter | Bad TCP segments received |
+| `bigip_tcp_received_resets_total` | counter | TCP RST packets received |
+
+### Devices (`bigip_device_*`)
+
+Labels: `target`, `device`, `hostname`, `management_ip`.
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `bigip_device_failover_state` | gauge | `0`=unknown, `1`=standby, `2`=active |
+| `bigip_device_current_load_factor` | gauge | Current HA load factor |
+
 
 
 #### Useful queries
