@@ -64,6 +64,7 @@ func (p *Collector) Probe(ctx context.Context, target map[string]string, hc *htt
 		{"HTTPProfile", GetHTTPProfileProbe},
 		{"TCPProfile", GetTCPProfileProbe},
 		{"Device", GetDeviceProbe},
+		{"Interface", GetInterfaceProbe},
 	}
 
 	success := true
