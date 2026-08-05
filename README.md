@@ -46,6 +46,8 @@ It follows the standard [multi-target exporter pattern](https://prometheus.io/do
   - **Nodes** — per-node traffic, connections, and health state.
   - **Client-SSL** — handshake success/failure, TLS version usage, session cache.
   - **Hardware** — fan/PSU/temperature/humidity sensors and a device-info metric (appliance only; gracefully skipped on VE).
+  - **Interfaces** — per-interface link status (up/down/disabled/uninit/missing/unknown), throughput, packets, drops, and errors.
+
 
 - 🏷️ Consistent `target` label on every metric for easy multi-device dashboards.
 - 🩺 Built-in `probe_success` and `probe_duration_seconds` metrics per scrape.
@@ -275,9 +277,30 @@ Labels: `target`, `device`, `hostname`, `management_ip`.
 | `bigip_device_failover_state` | gauge | `0`=unknown, `1`=standby, `2`=active |
 | `bigip_device_current_load_factor` | gauge | Current HA load factor |
 
+### Interfaces (`bigip_interface_*`)
 
+Labels: `target`, `name` (status metric adds `bundle`, `bundleSpeed`,
+`flowControl`, `forceGigabitFiber`, `forwardErrorCorrection`,
+`linkTrapsEnabled`, `lldpAdmin`, `macAddress`, `mediaActive`, `mediaFixed`,
+`mediaMax`, `mediaSfp`, `mtu`, `portFwdMode`, `preferPort`, `qinqEthertype`,
+`sflowPollInterval`, `sflowPollIntervalGlobal`, `stp`, `stpAutoEdgePort`,
+`stpEdgePort`, `stpLinkType`).
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `bigip_interface_status` | gauge | `1`=up, `0`=down, `2`=disabled, `3`=uninit, `4`=miss, `-1`=unknown |
+| `bigip_interface_counters_bits_in` / `_bits_out` | counter | Interface throughput in bits |
+| `bigip_interface_counters_pkts_in` / `_pkts_out` | counter | Interface packet counts |
+| `bigip_interface_counters_drops_all` | counter | Packets dropped on the interface |
+| `bigip_interface_counters_errors_all` | counter | Errors on the interface |
+
+> ⚠️ Because `disabled`, `uninit`, and `miss` are distinct from `down`, a
+> naive `bigip_interface_status == 0` alert only fires on genuine link
+> failures — administratively disabled or not-yet-initialized interfaces
+> won't trigger false positives.
 
 #### Useful queries
+
 
 ```promql
 # SSL handshake failure rate
@@ -493,8 +516,9 @@ No configuration is required — caching is automatic.
 │   └── utils               # F5 token authentication
 └── pkg
     ├── http                # iControl REST client (token-based)
-    └── probe               # collectors: vs, pools, compute, disk, certs, syncgroup, traffic
+    └── probe               # collectors: vs, pools, compute, disk, certs, syncgroup, traffic, interface
 ```
+
 
 ### Run Tests
 The token-caching layer is covered by unit tests in
@@ -534,7 +558,7 @@ When contributing metrics, follow the
 A complete set of recommended alerts (for both Prometheus and Grafana) is
 documented in [`alerts/README.md`](alerts/README.md), covering availability,
 system load, TMM, HA, virtual servers, pools/nodes, client-SSL, certificates,
-and hardware sensors.
+hardware sensors, and interfaces.
 ---
 ## License
 

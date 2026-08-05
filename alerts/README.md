@@ -22,6 +22,7 @@ differs).
 - [Client-SSL](#client-ssl)
 - [Certificates](#certificates)
 - [Hardware](#hardware)
+- [Interfaces](#interfaces)
 
 ## Severity Levels
 
@@ -278,7 +279,49 @@ bigip_hardware_humidity_percent > 80
 
 ---
 
+## Interfaces
+
+> `bigip_interface_status` distinguishes `down` (genuine link failure) from
+> administratively `disabled` and not-yet-`uninit`ialized interfaces, so these
+> alerts don't false-positive on interfaces that are intentionally off.
+
+### Interface Down — `critical`
+> Status: `1=up, 0=down, 2=disabled, 3=uninit, 4=miss, -1=unknown`. Only
+> matches a genuine link failure on an enabled interface.
+```promql
+bigip_interface_status == 0
+```
+**For:** `2m`
+**Description:** `Interface {{ $labels.name }} on {{ $labels.instance }} is down.`
+
+### Interface Errors — `warning`
+```promql
+rate(bigip_interface_counters_errors_all[5m]) > 0
+```
+**For:** `10m`
+**Description:** `Interface {{ $labels.name }} on {{ $labels.instance }} is reporting errors.`
+
+### Interface Drops — `warning`
+```promql
+rate(bigip_interface_counters_drops_all[5m]) > 0
+```
+**For:** `10m`
+**Description:** `Interface {{ $labels.name }} on {{ $labels.instance }} is dropping packets.`
+
+### Interface Near Saturation — `warning`
+> Tune the `> 900e6` threshold (bits/s) to ~90% of the interface's rated
+> speed (available via the `bundleSpeed` label on `bigip_interface_status`).
+```promql
+rate(bigip_interface_counters_bits_in[5m]) > 900e6
+or
+rate(bigip_interface_counters_bits_out[5m]) > 900e6
+```
+**For:** `10m`
+
+---
+
 ## Notes
+
 
 - All alerts include `{{ $labels.instance }}` in their description to identify
   the affected device.

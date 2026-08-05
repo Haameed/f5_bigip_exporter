@@ -40,6 +40,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - Initial
 
+
+
 ### Added
 - Initial release.
 - Collectors for Virtual Servers, Pools (and members), Compute/CPU/Memory,
@@ -118,4 +120,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   HTTP response-code ratios and TCP retransmit rates provide equivalent
   application/network health signals instead.
 
+## [0.6.0]
+
+### Added
+- **Interface metrics** (`/mgmt/tm/net/interface`,
+  `/mgmt/tm/net/interface/<name>/stats`): `bigip_interface_status` plus
+  throughput/packet/drop/error counters
+  (`bigip_interface_counters_{bits,pkts}_{in,out}`,
+  `bigip_interface_counters_{drops,errors}_all`), with rich labels for bundle,
+  media, MTU, STP, and sFlow settings (`pkg/probe/interface.go`).
+  `bigip_interface_status` distinguishes six states: `1`=up, `0`=down,
+  `2`=disabled, `3`=uninit, `4`=miss, `-1`=unknown — so an administratively
+  disabled or not-yet-initialized interface is never confused with a genuine
+  link failure.
+- New "🔌 Interfaces" row and `Interface` template variable added to the
+  Grafana dashboard (`grafana/bigip_exporter_dashboard.json`), plus a matching
+  "Interfaces" alert section in `alerts/README.md`.
+
+### Fixed
+- Fixed a `structtag` lint warning in `pkg/probe/interface.go` (unexported
+  struct fields carrying `json` tags) by exporting the `InterfaceStatsEntry`
+  fields.
+
+[0.6.0]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.4.0...v0.5.0
