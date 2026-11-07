@@ -23,6 +23,7 @@ differs).
 - [Certificates](#certificates)
 - [Hardware](#hardware)
 - [Interfaces](#interfaces)
+- [License](#license)
 
 ## Severity Levels
 
@@ -317,6 +318,41 @@ or
 rate(bigip_interface_counters_bits_out[5m]) > 900e6
 ```
 **For:** `10m`
+
+---
+
+## License
+
+> These alerts only fire when the device actually reports a license
+> expiration date (`bigip_license_available == 1`). Devices/versions that
+> don't expose one simply won't match these expressions — no false
+> positives.
+
+### License Expired — `critical`
+```promql
+bigip_license_expired == 1
+```
+**For:** `0m`
+
+### License Expiring Soon (≤ 7 days) — `critical`
+```promql
+bigip_license_expiration_days > 0 and bigip_license_expiration_days <= 7
+```
+**For:** `1h`
+
+### License Expiring (≤ 30 days) — `warning`
+```promql
+bigip_license_expiration_days > 7 and bigip_license_expiration_days <= 30
+```
+**For:** `1h`
+
+### License Expiration Data Not Reported — `warning`
+> Visibility check: lets you know which devices you can't rely on
+> expiration alerting for, so you can track their license renewal manually.
+```promql
+bigip_license_available == 0
+```
+**For:** `1h`
 
 ---
 

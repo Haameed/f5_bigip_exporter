@@ -51,7 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Multi-arch Docker images (amd64/arm64) automatically built and published to
   GitHub Container Registry (`ghcr.io/haameed/f5_bigip_exporter`) on every release.
 
-[Unreleased]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.7.0...HEAD
 [0.1.0]: https://github.com/Haameed/f5_bigip_exporter/releases/tag/v0.1.0
 [0.2.0]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.1.0...v0.2.0
 
@@ -142,5 +142,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   struct fields carrying `json` tags) by exporting the `InterfaceStatsEntry`
   fields.
 
+## [0.7.0]
+
+### Added
+- **License metrics** (`/mgmt/tm/sys/license`, `pkg/probe/license.go`):
+  registration key, platform ID, licensed version, and appliance serial
+  number (`bigip_license_info`), plus — where reported by the device —
+  license start/"licensed on"/last service-check dates, the daily renewal
+  notification period, days until expiry, and an expired flag. Not every
+  BIG-IP version/license type exposes an expiration date via iControl REST
+  ([#1](https://github.com/Haameed/f5_bigip_exporter/issues/1)); in that case
+  the probe doesn't fail the scrape — it logs a warning and exposes
+  `bigip_license_available=0` instead, so the gap is still visible as a metric.
+- New "🔑 License" row added to the Grafana dashboard
+  (`grafana/bigip_exporter_dashboard.json`): availability/status stats, a
+  days-remaining gauge, an expiration-date stat, a license info table
+  (registration key/platform/version/serial), and an important-dates table
+  (start/licensed-on/last service check).
+- Matching "License" alert rules (expired, expiring ≤7/≤30 days, and an
+  expiration-data-not-reported visibility alert) added to `alerts/README.md`.
+
+[0.7.0]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.4.0...v0.5.0
