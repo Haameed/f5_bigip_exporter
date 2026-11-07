@@ -1,7 +1,11 @@
 # BIG-IP Exporter
 
+[![CI](https://github.com/Haameed/f5_bigip_exporter/actions/workflows/ci.yml/badge.svg)](https://github.com/Haameed/f5_bigip_exporter/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/Haameed/f5_bigip_exporter?sort=semver)](https://github.com/Haameed/f5_bigip_exporter/releases/latest)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Haameed/f5_bigip_exporter)](https://goreportcard.com/report/github.com/Haameed/f5_bigip_exporter)
 [![Go Reference](https://img.shields.io/badge/Go-1.25-00ADD8?logo=go&logoColor=white)](https://go.dev/)
 [![Prometheus](https://img.shields.io/badge/Prometheus-Exporter-E6522C?logo=prometheus&logoColor=white)](https://prometheus.io/)
+[![Docker Image](https://img.shields.io/badge/ghcr.io-f5__bigip__exporter-blue?logo=docker&logoColor=white)](https://github.com/Haameed/f5_bigip_exporter/pkgs/container/f5_bigip_exporter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
 
@@ -14,6 +18,7 @@ It follows the standard [multi-target exporter pattern](https://prometheus.io/do
 ## Table of Contents
 
 - [Features](#features)
+- [Compatibility](#compatibility)
 - [How It Works](#how-it-works)
 - [Metrics](#metrics)
 - [Installation](#installation)
@@ -23,8 +28,11 @@ It follows the standard [multi-target exporter pattern](https://prometheus.io/do
 - [Prometheus Configuration](#prometheus-configuration)
 - [HTTP Endpoints](#http-endpoints)
 - [Security Considerations](#security-considerations)
+- [Performance & Token Caching](#performance--token-caching)
 - [Development](#development)
 - [Contributing](#contributing)
+- [Alerting](#alerting)
+- [Grafana Dashboard](#grafana-dashboard)
 - [License](#license)
 
 ---
@@ -48,8 +56,6 @@ It follows the standard [multi-target exporter pattern](https://prometheus.io/do
   - **Hardware** — fan/PSU/temperature/humidity sensors and a device-info metric (appliance only; gracefully skipped on VE).
   - **Interfaces** — per-interface link status (up/down/disabled/uninit/missing/unknown), throughput, packets, drops, and errors.
   - **License** — registration key/platform/version info, license start/expiration dates, days until expiry, and expired flag. Gracefully skipped (with a warning logged and `bigip_license_available=0`) on BIG-IP versions/license types that don't report an expiration date via iControl REST.
-
-
 - 🏷️ Consistent `target` label on every metric for easy multi-device dashboards.
 - 🩺 Built-in `probe_success` and `probe_duration_seconds` metrics per scrape.
 - 🔑 **Token-based authentication with caching** — uses the BIG-IP `tmos` login
@@ -57,6 +63,21 @@ It follows the standard [multi-target exporter pattern](https://prometheus.io/do
   repeated scrapes don't hammer the device with new logins.
 - **HTTP/TCP profiles** — response codes (2xx–5xx), HTTP versions, TCP retransmits & failures.
 - **Devices** — per-device HA failover state.
+
+---
+
+## Compatibility
+
+| Component | Supported / Tested |
+|---|---|
+| **BIG-IP / TMOS** | 13.x and later (anything exposing the iControl REST endpoints used by the collectors). Verified against **17.1.3** / **17.1.3.1**; appliance, Virtual Edition (VE), and vCMP guests all work — hardware-only and license-expiration metrics are automatically omitted where the platform doesn't report them, without failing the scrape. |
+| **Go** | 1.25+ (see [`go.mod`](go.mod)) |
+| **OS / Arch (exporter binary & image)** | Linux, macOS, Windows — `amd64` and `arm64` (built via [GoReleaser](.goreleaser.yaml) on every tagged release) |
+| **Prometheus** | Any version supporting the [multi-target `/probe` exporter pattern](https://prometheus.io/docs/guides/multi-target-exporter/) (relabeling-based scrape config) |
+
+> Running against an older or untested TMOS version? Please [open an
+> issue](https://github.com/Haameed/f5_bigip_exporter/issues) with your
+> version and any errors you see — reports help grow this table.
 
 ---
 
@@ -245,6 +266,34 @@ Labels: `target`, `profile`, `partition`. Protocol-usage metric adds a
 | `bigip_clientssl_protocol_uses_total` | counter | Handshakes per TLS/SSL version (label `protocol`: `SSLv2`, `SSLv3`, `TLSv1.0`, `TLSv1.1`, `TLSv1.2`, `TLSv1.3`) |
 | `bigip_clientssl_cipher_uses_total` | counter | Cipher usage by category (labels: `strength` = `weak`/`strong`, `cipher`) |
 
+### Hardware (`bigip_hardware_*`, `bigip_device_info`)
+
+Physical sensor metrics. **Only available on hardware appliances** — on Virtual
+Edition or vCMP guests, `bigip_hardware_available` is `0` and sensor metrics are
+omitted (the probe does not fail).
+
+Labels: `target` (plus sensor-specific labels).
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `bigip_hardware_available` | gauge | `1`=hardware appliance, `0`=VE/vCMP guest |
+| `bigip_hardware_fan_status` | gauge | Fan status `1`=up, `0`=not up (label: `index`) |
+| `bigip_hardware_power_supply_status` | gauge | PSU status `1`=up, `0`=not up (labels: `index`, `current_status`) |
+| `bigip_hardware_temperature_celsius` | gauge | Temperature in °C (labels: `index`, `location`) |
+| `bigip_hardware_temperature_high_limit_celsius` | gauge | High temperature limit in °C |
+| `bigip_hardware_humidity_percent` | gauge | Chassis humidity (%) |
+| `bigip_device_info` | gauge | Constant `1`; device metadata in labels: `marketing_name`, `platform`, `chassis_serial`, `base_mac`, `bios_revision` |
+
+#### Using the info metric in Grafana
+
+`bigip_device_info` follows the standard Prometheus "info metric" pattern. Join
+it onto other metrics to enrich them with device metadata:
+
+```promql
+bigip_tmm_cpu_usage_ratio
+  * on(target) group_left(marketing_name, platform) bigip_device_info
+```
+
 ### HTTP Profiles (`bigip_http_*`)
 
 Labels: `target`, `profile`, `partition`.
@@ -336,6 +385,8 @@ rate(bigip_clientssl_secure_handshakes_total[5m])
 
 # Alert on legacy/insecure protocol usage
 rate(bigip_clientssl_protocol_uses_total{protocol=~"SSLv.*|TLSv1.0|TLSv1.1"}[5m]) > 0
+```
+
 ---
 
 ## Installation
@@ -351,19 +402,21 @@ go build -o f5_bigip_exporter ./cmd/f5_bigip_exporter
 ```
 
 ### Docker
-### Pull from GitHub Container Registry
+
+#### Pull from GitHub Container Registry
 
 Pre-built multi-arch images (amd64 / arm64) are published on every release:
 
 ```bash
 docker pull ghcr.io/haameed/f5_bigip_exporter:latest
 # or a specific version:
-docker pull ghcr.io/haameed/f5_bigip_exporter:v0.2.0
+docker pull ghcr.io/haameed/f5_bigip_exporter:v0.7.0
 # Run it:
 docker run -d --name f5_bigip_exporter \
   -p 11000:11000 \
   -v "$(pwd)/bigip-config.yaml:/etc/f5_bigip_exporter/bigip-config.yaml:ro" \
   ghcr.io/haameed/f5_bigip_exporter:latest -insecure
+```
 
 A minimal multi-stage `Dockerfile`:
 
@@ -389,32 +442,7 @@ docker run -d --name f5_bigip_exporter \
   -v "$(pwd)/bigip-config.yaml:/etc/f5_bigip_exporter/bigip-config.yaml:ro" \
   f5_bigip_exporter -insecure
 ```
-### Hardware (`bigip_hardware_*`, `bigip_device_info`)
 
-Physical sensor metrics. **Only available on hardware appliances** — on Virtual
-Edition or vCMP guests, `bigip_hardware_available` is `0` and sensor metrics are
-omitted (the probe does not fail).
-
-Labels: `target` (plus sensor-specific labels).
-
-| Metric | Type | Description |
-|--------|------|-------------|
-| `bigip_hardware_available` | gauge | `1`=hardware appliance, `0`=VE/vCMP guest |
-| `bigip_hardware_fan_status` | gauge | Fan status `1`=up, `0`=not up (label: `index`) |
-| `bigip_hardware_power_supply_status` | gauge | PSU status `1`=up, `0`=not up (labels: `index`, `current_status`) |
-| `bigip_hardware_temperature_celsius` | gauge | Temperature in °C (labels: `index`, `location`) |
-| `bigip_hardware_temperature_high_limit_celsius` | gauge | High temperature limit in °C |
-| `bigip_hardware_humidity_percent` | gauge | Chassis humidity (%) |
-| `bigip_device_info` | gauge | Constant `1`; device metadata in labels: `marketing_name`, `platform`, `chassis_serial`, `base_mac`, `bios_revision` |
-
-#### Using the info metric in Grafana
-
-`bigip_device_info` follows the standard Prometheus "info metric" pattern. Join
-it onto other metrics to enrich them with device metadata:
-
-```promql
-bigip_tmm_cpu_usage_ratio
-  * on(target) group_left(marketing_name, platform) bigip_device_info
 ---
 
 ## Configuration
@@ -513,6 +541,7 @@ scrape_configs:
 - **Network exposure** — the `/probe` endpoint accepts arbitrary `target` values that match the config map. Keep the exporter on a trusted management network.
 
 ---
+
 ## Performance & Token Caching
 
 To minimize load on your BIG-IP devices, the exporter **caches authentication
@@ -578,13 +607,40 @@ When contributing metrics, follow the
 (base units, `_total` for counters, descriptive `HELP` text).
 
 ---
+
 ## Alerting
 
 A complete set of recommended alerts (for both Prometheus and Grafana) is
 documented in [`alerts/README.md`](alerts/README.md), covering availability,
 system load, TMM, HA, virtual servers, pools/nodes, client-SSL, certificates,
 hardware sensors, and interfaces.
+
 ---
+
+## Grafana Dashboard
+
+A ready-to-import dashboard covering every metric family exposed by the
+exporter — Overview, System (CPU/Memory/Disk), TMM, High Availability,
+Global Traffic, Virtual Servers, Pools, Nodes, Client-SSL, Certificates,
+Hardware, HTTP/TCP Profiles, Devices, Interfaces, and License — is provided
+at [`grafana/bigip_exporter_dashboard.json`](grafana/bigip_exporter_dashboard.json).
+
+<!--
+TODO: add a dashboard screenshot here once available, e.g.:
+![Grafana dashboard overview](docs/images/dashboard-overview.png)
+-->
+
+**To import it:**
+
+1. In Grafana, go to **Dashboards → New → Import**.
+2. Upload `grafana/bigip_exporter_dashboard.json` (or paste its contents).
+3. Select your Prometheus data source when prompted (the `DS_PROMETHEUS`
+   variable).
+4. Pick a target from the `Target` dropdown at the top of the dashboard to
+   filter all panels to that BIG-IP device.
+
+---
+
 ## License
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
