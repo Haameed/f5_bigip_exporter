@@ -47,6 +47,7 @@ It follows the standard [multi-target exporter pattern](https://prometheus.io/do
   - **Client-SSL** — handshake success/failure, TLS version usage, session cache.
   - **Hardware** — fan/PSU/temperature/humidity sensors and a device-info metric (appliance only; gracefully skipped on VE).
   - **Interfaces** — per-interface link status (up/down/disabled/uninit/missing/unknown), throughput, packets, drops, and errors.
+  - **License** — registration key/platform/version info, license start/expiration dates, days until expiry, and expired flag. Gracefully skipped (with a warning logged and `bigip_license_available=0`) on BIG-IP versions/license types that don't report an expiration date via iControl REST.
 
 
 - 🏷️ Consistent `target` label on every metric for easy multi-device dashboards.
@@ -299,6 +300,30 @@ Labels: `target`, `name` (status metric adds `bundle`, `bundleSpeed`,
 > failures — administratively disabled or not-yet-initialized interfaces
 > won't trigger false positives.
 
+### License (`bigip_license_*`)
+
+Labels: `target` (`bigip_license_info` adds `registration_key`, `platform_id`,
+`licensed_version`, `appliance_serial_number`; `bigip_license_expired` adds
+`expiration_date`).
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `bigip_license_available` | gauge | `1` if the device reports a license expiration date, `0` otherwise |
+| `bigip_license_info` | gauge | Constant `1`; registration/platform/version metadata via labels |
+| `bigip_license_start_timestamp_seconds` | gauge | Unix timestamp when the license became valid |
+| `bigip_licensed_on_timestamp_seconds` | gauge | Unix timestamp when the device was licensed |
+| `bigip_license_service_check_timestamp_seconds` | gauge | Unix timestamp of the last license service check |
+| `bigip_license_daily_renew_notification_period_days` | gauge | Days before expiration that daily renewal notifications start |
+| `bigip_license_expiration_timestamp_seconds` | gauge | Unix timestamp when the license expires |
+| `bigip_license_expiration_days` | gauge | Days until the license expires (`0` if already expired) |
+| `bigip_license_expired` | gauge | `1`=expired, `0`=valid |
+
+> ⚠️ Not every BIG-IP version/license type reports a license expiration date
+> via iControl REST (`/mgmt/tm/sys/license`) — see
+> [issue #1](https://github.com/Haameed/f5_bigip_exporter/issues/1). When it's
+> missing, the exporter logs a warning and exposes only
+> `bigip_license_available=0`, instead of failing the scrape.
+
 #### Useful queries
 
 
@@ -516,7 +541,7 @@ No configuration is required — caching is automatic.
 │   └── utils               # F5 token authentication
 └── pkg
     ├── http                # iControl REST client (token-based)
-    └── probe               # collectors: vs, pools, compute, disk, certs, syncgroup, traffic, interface
+    └── probe               # collectors: vs, pools, compute, disk, certs, syncgroup, traffic, interface, license
 ```
 
 
