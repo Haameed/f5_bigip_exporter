@@ -7,6 +7,86 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0]
+
+### Changed — ⚠️ BREAKING: Prometheus metric-naming compliance pass
+
+This release brings every metric exposed by the exporter in line with the
+[Prometheus metric and label naming best practices](https://prometheus.io/docs/practices/naming/).
+**Every dashboard, alert rule, and recording rule that references the metrics
+below must be updated.** There is no compatibility shim — metric names and,
+in several cases, metric *values* have changed.
+
+- **Renamed metrics to `snake_case`** (no more `camelCase`/`PascalCase`
+  segments), across `pkg/probe/traffic.go`, `vs.go`, `interface.go`,
+  `disk.go`, and `compute.go`. Examples:
+  `bigip_HttpRequests` → `bigip_http_requests_total`,
+  `bigip_FiveMinAvg_client_side_traffic_bits_in` →
+  `bigip_five_min_avg_client_side_traffic_bits_in`,
+  `bigip_virtual_server_clientside_bits_in` →
+  `bigip_virtual_server_client_side_received_bits_total`,
+  `bigip_interface_counters_bits_in` → `bigip_interface_received_bits_total`.
+- **Added the missing `_total` suffix to every cumulative counter** (e.g.
+  `bigip_node_total_requests` → `bigip_node_requests_total`,
+  `bigip_pool_total_requests` → `bigip_pool_requests_total`,
+  `bigip_virtual_server_total_requests` → `bigip_virtual_server_requests_total`,
+  `bigip_client_side_traffic_total_connections` →
+  `bigip_client_side_connections_total`, and ~30 more).
+- **Fixed Gauge/Counter type mismatches**: several cumulative values in
+  `pkg/probe/vs.go` (syncookie accepts/rejects/syncookies, message-router
+  counters, client/ephemeral-side evicted/slow-killed connections, total
+  requests) were previously registered as `GaugeValue` even though they are
+  monotonically increasing counters. They are now `CounterValue` and carry a
+  `_total` suffix.
+- **Converted percentages to base-unit ratios (0–1 instead of 0–100)**, per
+  the Prometheus convention that `ratio` values must be 0–1:
+  - `bigip_cpu_*_percent` (24 metrics in `pkg/probe/compute.go`) →
+    `bigip_cpu_*_ratio`, values divided by 100.
+  - `bigip_hardware_humidity_percent` → `bigip_hardware_humidity_ratio`,
+    value divided by 100.
+  - `bigip_tmm_cpu_usage_ratio`, `bigip_tmm_{five_sec,one_min,five_min}_avg_usage_ratio`,
+    and the virtual-server equivalents were already named `_ratio` but were
+    still returning 0–100 values; they now correctly return 0–1.
+  - **Action required:** any alert/dashboard threshold comparing these
+    metrics against `85`, `90`, etc. must be rewritten against `0.85`, `0.90`.
+- **Converted disk size metrics from megabytes to bytes** (the Prometheus
+  base unit): `bigip_disk_total_size_MB` → `bigip_disk_size_bytes`,
+  `bigip_disk_vg_free_size_MB` → `bigip_disk_vg_free_bytes`,
+  `bigip_disk_vg_inused_size_MB` → `bigip_disk_vg_in_use_bytes`,
+  `bigip_disk_vg_reserved_size_MB` → `bigip_disk_vg_reserved_bytes`. Values
+  are now 1,048,576× larger (MiB→bytes).
+- **Renamed "info"-style metrics to the `_info` suffix**, following the
+  standard Prometheus info-metric pattern (constant value `1`, metadata in
+  labels): `bigip_virtual_server_cmp_enable_mode` → `..._cmp_enable_mode_info`,
+  `bigip_virtual_server_cmp_enabled` → `..._cmp_enabled_info`,
+  `bigip_virtual_server_status_availability_state` → `..._availability_state_info`,
+  `bigip_virtual_server_status_enabled_state` → `..._enabled_state_info`,
+  `bigip_virtual_server_syncookie_status` → `..._syncookie_status_info`.
+- **Converted connection-duration metrics from milliseconds to seconds**
+  (the Prometheus base unit for time): `bigip_virtual_server_cs_max_conn_duration`
+  → `bigip_virtual_server_client_side_connection_duration_max_seconds` (and
+  `_mean_seconds` / `_min_seconds`), values divided by 1000.
+- **Converted `camelCase` interface labels to `snake_case`**
+  (`bundleSpeed` → `bundle_speed`, `flowControl` → `flow_control`,
+  `forceGigabitFiber` → `force_gigabit_fiber`, `stpAutoEdgePort` →
+  `stp_auto_edge_port`, etc. — 16 labels total on `bigip_interface_status`).
+- Updated `alerts/README.md` and `grafana/bigip_exporter_dashboard.json` to
+  use every renamed metric/label and rescaled threshold (ratio panels now
+  use Grafana's `percentunit` field type with 0–1 thresholds instead of
+  `percent` with 0–100 thresholds).
+
+### Migration notes
+- Grep your rule files / dashboards for the old names listed above (or the
+  full list of renames applied in this release) and update them before
+  upgrading the exporter in production, or you will silently lose
+  alerting/graphing coverage for the affected metrics.
+- If you depend on absolute values in recording rules for the rescaled
+  metrics (CPU/humidity ratios, disk sizes, connection durations), update
+  the downstream math (divide-by-100 / divide-by-1000 constants are no
+  longer needed — they're applied by the exporter now).
+
+## [0.7.1]
+
 ### Added
 - **Token caching** — authentication tokens are now cached per target and reused
   until shortly before expiry, drastically reducing login load on BIG-IP devices.
@@ -34,10 +114,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Corrected the `oneMinAvgClientSideTraffic.totConns` JSON key (previously
   `totConn`), which prevented that metric from being populated.
 
-### Notes
-- Disk metrics keep the `_MB` suffix to match the raw units reported by the F5
-  iControl REST API.
-
 ## [0.1.0] - Initial
 
 
@@ -51,7 +127,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Multi-arch Docker images (amd64/arm64) automatically built and published to
   GitHub Container Registry (`ghcr.io/haameed/f5_bigip_exporter`) on every release.
 
-[Unreleased]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.7.0...HEAD
 [0.1.0]: https://github.com/Haameed/f5_bigip_exporter/releases/tag/v0.1.0
 [0.2.0]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.1.0...v0.2.0
 
@@ -162,6 +237,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Matching "License" alert rules (expired, expiring ≤7/≤30 days, and an
   expiration-data-not-reported visibility alert) added to `alerts/README.md`.
 
+[Unreleased]: https://github.com/Haameed/f5_bigip_exporter/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.7.1...v1.0.0
+[0.7.1]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/Haameed/f5_bigip_exporter/compare/v0.4.0...v0.5.0

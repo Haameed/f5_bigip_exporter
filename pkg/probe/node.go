@@ -36,7 +36,7 @@ func GetNodeProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool) {
 			[]string{"target", "node", "partition", "address"}, nil,
 		)
 		nodeServersideTotConns = prometheus.NewDesc(
-			"bigip_node_serverside_total_connections",
+			"bigip_node_serverside_connections_total",
 			"Total server-side connections",
 			[]string{"target", "node", "partition", "address"}, nil,
 		)
@@ -51,7 +51,7 @@ func GetNodeProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool) {
 			[]string{"target", "node", "partition", "address"}, nil,
 		)
 		nodeTotRequests = prometheus.NewDesc(
-			"bigip_node_total_requests",
+			"bigip_node_requests_total",
 			"Total requests to the node",
 			[]string{"target", "node", "partition", "address"}, nil,
 		)

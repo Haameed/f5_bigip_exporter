@@ -43,7 +43,7 @@ groups:
   - name: f5_bigip
     rules:
       - alert: F5TmmCpuHigh
-        expr: bigip_tmm_one_min_avg_usage_ratio > 85
+        expr: bigip_tmm_one_min_avg_usage_ratio > 0.85
         for: 5m
         labels:
           severity: warning
@@ -75,7 +75,7 @@ probe_success == 0
 
 ### CPU High — `warning`
 ```promql
-avg by (instance) (100 - bigip_cpu_one_min_avg_idle_percent) > 85
+avg by (instance) (1 - bigip_cpu_one_min_avg_idle_ratio) > 0.85
 ```
 **For:** `10m`
 
@@ -87,7 +87,7 @@ avg by (instance) (100 - bigip_cpu_one_min_avg_idle_percent) > 85
 
 ### Disk High — `warning`
 ```promql
-(bigip_disk_vg_inused_size_MB / bigip_disk_total_size_MB) * 100 > 85
+(bigip_disk_vg_in_use_bytes / bigip_disk_size_bytes) * 100 > 85
 ```
 **For:** `10m`
 
@@ -100,7 +100,7 @@ avg by (instance) (100 - bigip_cpu_one_min_avg_idle_percent) > 85
 
 ### TMM CPU High — `warning`
 ```promql
-bigip_tmm_one_min_avg_usage_ratio > 85
+bigip_tmm_one_min_avg_usage_ratio > 0.85
 ```
 **For:** `5m`
 **Description:** `TMM {{ $labels.tmm_id }} CPU usage is above 85% for 5 minutes.`
@@ -135,7 +135,7 @@ bigip_ha_failover_status == 3
 ### Virtual Server Offline — `critical`
 > `availability_state` label: `offline` indicates the VS is down.
 ```promql
-bigip_virtual_server_status_availability_state{availability_state="offline"} == 1
+bigip_virtual_server_availability_state_info{availability_state="offline"} == 1
 ```
 **For:** `2m`
 
@@ -276,7 +276,7 @@ bigip_hardware_power_supply_status < 1
 
 ### High Humidity — `warning`
 ```promql
-bigip_hardware_humidity_percent > 80
+bigip_hardware_humidity_ratio > 0.80
 ```
 **For:** `10m`
 
@@ -299,25 +299,25 @@ bigip_interface_status == 0
 
 ### Interface Errors — `warning`
 ```promql
-rate(bigip_interface_counters_errors_all[5m]) > 0
+rate(bigip_interface_errors_total[5m]) > 0
 ```
 **For:** `10m`
 **Description:** `Interface {{ $labels.name }} on {{ $labels.instance }} is reporting errors.`
 
 ### Interface Drops — `warning`
 ```promql
-rate(bigip_interface_counters_drops_all[5m]) > 0
+rate(bigip_interface_dropped_packets_total[5m]) > 0
 ```
 **For:** `10m`
 **Description:** `Interface {{ $labels.name }} on {{ $labels.instance }} is dropping packets.`
 
 ### Interface Near Saturation — `warning`
 > Tune the `> 900e6` threshold (bits/s) to ~90% of the interface's rated
-> speed (available via the `bundleSpeed` label on `bigip_interface_status`).
+> speed (available via the `bundle_speed` label on `bigip_interface_status`).
 ```promql
-rate(bigip_interface_counters_bits_in[5m]) > 900e6
+rate(bigip_interface_received_bits_total[5m]) > 900e6
 or
-rate(bigip_interface_counters_bits_out[5m]) > 900e6
+rate(bigip_interface_sent_bits_total[5m]) > 900e6
 ```
 **For:** `10m`
 

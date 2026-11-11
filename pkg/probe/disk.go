@@ -8,25 +8,27 @@ import (
 )
 
 func GetDiskProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool) {
+	const mebibyte = 1024 * 1024
+
 	var (
 		totalDiskSize = prometheus.NewDesc(
-			"bigip_disk_total_size_MB",
-			"Total size of the disk in megabytes",
+			"bigip_disk_size_bytes",
+			"Total size of the disk in bytes",
 			[]string{"target", "name", "mode"}, nil,
 		)
 		vgFreeDiskSize = prometheus.NewDesc(
-			"bigip_disk_vg_free_size_MB",
-			"Volume group free size of the disk in megabytes",
+			"bigip_disk_vg_free_bytes",
+			"Volume group free size of the disk in bytes",
 			[]string{"target", "name", "mode"}, nil,
 		)
 		vgInUsedDiskSize = prometheus.NewDesc(
-			"bigip_disk_vg_inused_size_MB",
-			"Volume group in used size of the disk in megabytes",
+			"bigip_disk_vg_in_use_bytes",
+			"Volume group in-use size of the disk in bytes",
 			[]string{"target", "name", "mode"}, nil,
 		)
 		vgReservedDiskSize = prometheus.NewDesc(
-			"bigip_disk_vg_reserved_size_MB",
-			"Volume group reserved size of the disk in megabytes",
+			"bigip_disk_vg_reserved_bytes",
+			"Volume group reserved size of the disk in bytes",
 			[]string{"target", "name", "mode"}, nil,
 		)
 	)
@@ -58,10 +60,12 @@ func GetDiskProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool) {
 
 	var m []prometheus.Metric
 	for _, disk := range DisksResponse.Items {
-		m = append(m, prometheus.MustNewConstMetric(totalDiskSize, prometheus.GaugeValue, float64(disk.Size), target, disk.Name, disk.Mode))
-		m = append(m, prometheus.MustNewConstMetric(vgFreeDiskSize, prometheus.GaugeValue, float64(disk.VgFree), target, disk.Name, disk.Mode))
-		m = append(m, prometheus.MustNewConstMetric(vgInUsedDiskSize, prometheus.GaugeValue, float64(disk.VgInUsed), target, disk.Name, disk.Mode))
-		m = append(m, prometheus.MustNewConstMetric(vgReservedDiskSize, prometheus.GaugeValue, float64(disk.VgReserved), target, disk.Name, disk.Mode))
+		// The iControl REST API reports disk sizes in MB; convert to bytes
+		// (the Prometheus base unit) at the point of collection.
+		m = append(m, prometheus.MustNewConstMetric(totalDiskSize, prometheus.GaugeValue, float64(disk.Size)*mebibyte, target, disk.Name, disk.Mode))
+		m = append(m, prometheus.MustNewConstMetric(vgFreeDiskSize, prometheus.GaugeValue, float64(disk.VgFree)*mebibyte, target, disk.Name, disk.Mode))
+		m = append(m, prometheus.MustNewConstMetric(vgInUsedDiskSize, prometheus.GaugeValue, float64(disk.VgInUsed)*mebibyte, target, disk.Name, disk.Mode))
+		m = append(m, prometheus.MustNewConstMetric(vgReservedDiskSize, prometheus.GaugeValue, float64(disk.VgReserved)*mebibyte, target, disk.Name, disk.Mode))
 	}
 	return m, true
 }

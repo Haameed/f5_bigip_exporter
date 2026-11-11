@@ -250,7 +250,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "avg(100 - bigip_cpu_five_sec_avg_idle_percent{instance=\"$Target\"})",
+                      "expr": "avg(1 - bigip_cpu_five_sec_avg_idle_ratio{instance=\"$Target\"})",
                       "legendFormat": "CPU",
                       "range": true
                     },
@@ -277,7 +277,7 @@
                 "color": {
                   "mode": "thresholds"
                 },
-                "max": 100,
+                "max": 1,
                 "min": 0,
                 "thresholds": {
                   "mode": "absolute",
@@ -288,15 +288,15 @@
                     },
                     {
                       "color": "#EAB839",
-                      "value": 70
+                      "value": 0.7
                     },
                     {
                       "color": "red",
-                      "value": 85
+                      "value": 0.85
                     }
                   ]
                 },
-                "unit": "percent"
+                "unit": "percentunit"
               },
               "overrides": []
             },
@@ -481,7 +481,7 @@
                 "color": {
                   "mode": "thresholds"
                 },
-                "max": 100,
+                "max": 1,
                 "min": 0,
                 "thresholds": {
                   "mode": "absolute",
@@ -492,15 +492,15 @@
                     },
                     {
                       "color": "#EAB839",
-                      "value": 70
+                      "value": 0.7
                     },
                     {
                       "color": "red",
-                      "value": 85
+                      "value": 0.85
                     }
                   ]
                 },
-                "unit": "percent"
+                "unit": "percentunit"
               },
               "overrides": []
             },
@@ -637,7 +637,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_HttpRequests{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_http_requests_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "req/s",
                       "range": true
                     },
@@ -813,7 +813,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "100 - bigip_cpu_one_min_avg_idle_percent{instance=\"$Target\", host_id=~\"$HostID\"}",
+                      "expr": "1 - bigip_cpu_one_min_avg_idle_ratio{instance=\"$Target\", host_id=~\"$HostID\"}",
                       "legendFormat": "CPU {{cpu_id}}",
                       "range": true
                     },
@@ -867,7 +867,7 @@
                     "mode": "off"
                   }
                 },
-                "max": 100,
+                "max": 1,
                 "min": 0,
                 "thresholds": {
                   "mode": "absolute",
@@ -878,7 +878,7 @@
                     }
                   ]
                 },
-                "unit": "percent"
+                "unit": "percentunit"
               },
               "overrides": []
             },
@@ -918,7 +918,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "100 - avg(bigip_cpu_five_sec_avg_idle_percent{instance=\"$Target\", host_id=~\"$HostID\"})",
+                      "expr": "1 - avg(bigip_cpu_five_sec_avg_idle_ratio{instance=\"$Target\", host_id=~\"$HostID\"})",
                       "legendFormat": "5s",
                       "range": true
                     },
@@ -939,7 +939,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "100 - avg(bigip_cpu_one_min_avg_idle_percent{instance=\"$Target\", host_id=~\"$HostID\"})",
+                      "expr": "1 - avg(bigip_cpu_one_min_avg_idle_ratio{instance=\"$Target\", host_id=~\"$HostID\"})",
                       "legendFormat": "1m",
                       "range": true
                     },
@@ -960,7 +960,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "100 - avg(bigip_cpu_five_min_avg_idle_percent{instance=\"$Target\", host_id=~\"$HostID\"})",
+                      "expr": "1 - avg(bigip_cpu_five_min_avg_idle_ratio{instance=\"$Target\", host_id=~\"$HostID\"})",
                       "legendFormat": "5m",
                       "range": true
                     },
@@ -977,7 +977,7 @@
         "description": "",
         "id": 1102,
         "links": [],
-        "title": "CPU Usage — Time Windows",
+        "title": "CPU Usage \u2014 Time Windows",
         "vizConfig": {
           "group": "timeseries",
           "kind": "VizConfig",
@@ -1023,7 +1023,7 @@
                     }
                   ]
                 },
-                "unit": "percent"
+                "unit": "percentunit"
               },
               "overrides": []
             },
@@ -1063,7 +1063,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "avg(bigip_cpu_one_min_avg_user_percent{instance=\"$Target\", host_id=~\"$HostID\"})",
+                      "expr": "avg(bigip_cpu_one_min_avg_user_ratio{instance=\"$Target\", host_id=~\"$HostID\"})",
                       "legendFormat": "user",
                       "range": true
                     },
@@ -1084,7 +1084,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "avg(bigip_cpu_one_min_avg_system_percent{instance=\"$Target\", host_id=~\"$HostID\"})",
+                      "expr": "avg(bigip_cpu_one_min_avg_system_ratio{instance=\"$Target\", host_id=~\"$HostID\"})",
                       "legendFormat": "system",
                       "range": true
                     },
@@ -1105,7 +1105,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "avg(bigip_cpu_one_min_avg_iowait_percent{instance=\"$Target\", host_id=~\"$HostID\"})",
+                      "expr": "avg(bigip_cpu_one_min_avg_iowait_ratio{instance=\"$Target\", host_id=~\"$HostID\"})",
                       "legendFormat": "iowait",
                       "range": true
                     },
@@ -1126,7 +1126,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "avg(bigip_cpu_one_min_avg_irq_percent{instance=\"$Target\", host_id=~\"$HostID\"})",
+                      "expr": "avg(bigip_cpu_one_min_avg_irq_ratio{instance=\"$Target\", host_id=~\"$HostID\"})",
                       "legendFormat": "irq",
                       "range": true
                     },
@@ -1147,7 +1147,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "avg(bigip_cpu_one_min_avg_softirq_percent{instance=\"$Target\", host_id=~\"$HostID\"})",
+                      "expr": "avg(bigip_cpu_one_min_avg_softirq_ratio{instance=\"$Target\", host_id=~\"$HostID\"})",
                       "legendFormat": "softirq",
                       "range": true
                     },
@@ -1210,7 +1210,7 @@
                     }
                   ]
                 },
-                "unit": "percent"
+                "unit": "percentunit"
               },
               "overrides": []
             },
@@ -1376,7 +1376,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "bigip_cpu_one_min_avg_iowait_percent{instance=\"$Target\", host_id=~\"$HostID\"}",
+                      "expr": "bigip_cpu_one_min_avg_iowait_ratio{instance=\"$Target\", host_id=~\"$HostID\"}",
                       "legendFormat": "CPU {{cpu_id}}",
                       "range": true
                     },
@@ -1439,7 +1439,7 @@
                     }
                   ]
                 },
-                "unit": "percent"
+                "unit": "percentunit"
               },
               "overrides": []
             },
@@ -1873,7 +1873,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "(bigip_disk_vg_inused_size_MB{instance=\"$Target\"} / bigip_disk_total_size_MB{instance=\"$Target\"}) * 100",
+                      "expr": "(bigip_disk_vg_in_use_bytes{instance=\"$Target\"} / bigip_disk_size_bytes{instance=\"$Target\"}) * 100",
                       "legendFormat": "{{name}}",
                       "range": true
                     },
@@ -1989,7 +1989,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "bigip_disk_total_size_MB{instance=\"$Target\"}",
+                      "expr": "bigip_disk_size_bytes{instance=\"$Target\"}",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "Total",
@@ -2013,7 +2013,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "bigip_disk_vg_free_size_MB{instance=\"$Target\"}",
+                      "expr": "bigip_disk_vg_free_bytes{instance=\"$Target\"}",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "Free",
@@ -2037,7 +2037,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "bigip_disk_vg_inused_size_MB{instance=\"$Target\"}",
+                      "expr": "bigip_disk_vg_in_use_bytes{instance=\"$Target\"}",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "In Use",
@@ -2248,7 +2248,7 @@
                     "mode": "off"
                   }
                 },
-                "max": 100,
+                "max": 1,
                 "min": 0,
                 "thresholds": {
                   "mode": "absolute",
@@ -2259,7 +2259,7 @@
                     }
                   ]
                 },
-                "unit": "percent"
+                "unit": "percentunit"
               },
               "overrides": []
             },
@@ -3027,7 +3027,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_client_side_traffic_bits_in{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_client_side_received_bits_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Client In",
                       "range": true
                     },
@@ -3048,7 +3048,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_client_side_traffic_bits_out{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_client_side_sent_bits_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Client Out",
                       "range": true
                     },
@@ -3069,7 +3069,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_server_side_traffic_bits_in{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_server_side_received_bits_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Server In",
                       "range": true
                     },
@@ -3090,7 +3090,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_server_side_traffic_bits_out{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_server_side_sent_bits_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Server Out",
                       "range": true
                     },
@@ -3107,7 +3107,7 @@
         "description": "",
         "id": 1501,
         "links": [],
-        "title": "Throughput — Client & Server (bits/s)",
+        "title": "Throughput \u2014 Client & Server (bits/s)",
         "vizConfig": {
           "group": "timeseries",
           "kind": "VizConfig",
@@ -3206,7 +3206,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_client_side_traffic_packets_in_total{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_client_side_received_packets_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Client In",
                       "range": true
                     },
@@ -3227,7 +3227,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_client_side_traffic_packets_out_total{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_client_side_sent_packets_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Client Out",
                       "range": true
                     },
@@ -3248,7 +3248,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_server_side_traffic_packets_in_total{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_server_side_received_packets_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Server In",
                       "range": true
                     },
@@ -3269,7 +3269,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_server_side_traffic_packets_out_total{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_server_side_sent_packets_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Server Out",
                       "range": true
                     },
@@ -3286,7 +3286,7 @@
         "description": "",
         "id": 1502,
         "links": [],
-        "title": "Packets — Client & Server (pps)",
+        "title": "Packets \u2014 Client & Server (pps)",
         "vizConfig": {
           "group": "timeseries",
           "kind": "VizConfig",
@@ -3530,7 +3530,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_dropped_packets{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_dropped_packets_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Dropped",
                       "range": true
                     },
@@ -3551,7 +3551,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_IncomingPacketErrors{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_incoming_packet_errors_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Incoming err",
                       "range": true
                     },
@@ -3572,7 +3572,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_OutgoingPacketErrors{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_outgoing_packet_errors_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Outgoing err",
                       "range": true
                     },
@@ -3593,7 +3593,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_connection_memory_errors{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_connection_memory_errors_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Memory err",
                       "range": true
                     },
@@ -3696,7 +3696,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_LicenseDeny{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_license_deny_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "License",
                       "range": true
                     },
@@ -3717,7 +3717,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_MaintenanceModeDeny{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_maintenance_mode_deny_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Maintenance",
                       "range": true
                     },
@@ -3738,7 +3738,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_MaxConnVirtualAddressDeny{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_max_conn_virtual_address_deny_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "MaxConn vAddr",
                       "range": true
                     },
@@ -3759,7 +3759,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_MaxConnVirtualPathDeny{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_max_conn_virtual_path_deny_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "MaxConn vPath",
                       "range": true
                     },
@@ -3780,7 +3780,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_virtual_server_non_syn_deny{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_virtual_server_non_syn_deny_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Non-SYN",
                       "range": true
                     },
@@ -3883,7 +3883,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_HardwareSyncookiesDetected{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_hardware_syncookies_detected_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Detected",
                       "range": true
                     },
@@ -3904,7 +3904,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_HardwareSyncookiesGenerated{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_hardware_syncookies_generated_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Generated",
                       "range": true
                     },
@@ -4131,7 +4131,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_tmauth_success_results{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_tmauth_success_results_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Success",
                       "range": true
                     },
@@ -4152,7 +4152,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_tmauth_failure_results{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_tmauth_failure_results_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Failure",
                       "range": true
                     },
@@ -4173,7 +4173,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_tmauth_error_results{instance=\"$Target\"}[5m])",
+                      "expr": "rate(bigip_tmauth_error_results_total{instance=\"$Target\"}[5m])",
                       "legendFormat": "Error",
                       "range": true
                     },
@@ -4277,7 +4277,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "bigip_virtual_server_status_availability_state{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}",
+                      "expr": "bigip_virtual_server_availability_state_info{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "{{vs_name}}",
@@ -4373,7 +4373,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_virtual_server_clientside_bits_in{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}[5m])",
+                      "expr": "rate(bigip_virtual_server_client_side_received_bits_total{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}[5m])",
                       "legendFormat": "{{vs_name}} In",
                       "range": true
                     },
@@ -4394,7 +4394,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_virtual_server_clientside_bits_out{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}[5m])",
+                      "expr": "rate(bigip_virtual_server_client_side_sent_bits_total{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}[5m])",
                       "legendFormat": "{{vs_name}} Out",
                       "range": true
                     },
@@ -4510,7 +4510,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "bigip_virtual_server_clientside_current_connections{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}",
+                      "expr": "bigip_virtual_server_client_side_current_connections{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}",
                       "legendFormat": "{{vs_name}}",
                       "range": true
                     },
@@ -4613,7 +4613,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_virtual_server_clientside_total_connections{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}[5m])",
+                      "expr": "rate(bigip_virtual_server_client_side_connections_total{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}[5m])",
                       "legendFormat": "{{vs_name}} conn/s",
                       "range": true
                     },
@@ -4634,7 +4634,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_virtual_server_total_requests{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}[5m])",
+                      "expr": "rate(bigip_virtual_server_requests_total{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}[5m])",
                       "legendFormat": "{{vs_name}} req/s",
                       "range": true
                     },
@@ -4737,7 +4737,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "bigip_virtual_server_cs_mean_conn_duration{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}",
+                      "expr": "bigip_virtual_server_client_side_connection_duration_mean_seconds{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}",
                       "legendFormat": "{{vs_name}} mean",
                       "range": true
                     },
@@ -4758,7 +4758,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "bigip_virtual_server_cs_max_conn_duration{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}",
+                      "expr": "bigip_virtual_server_client_side_connection_duration_max_seconds{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}",
                       "legendFormat": "{{vs_name}} max",
                       "range": true
                     },
@@ -4861,7 +4861,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_virtual_server_syncookie_syncookies{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}[5m])",
+                      "expr": "rate(bigip_virtual_server_syncookie_syncookies_total{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}[5m])",
                       "legendFormat": "{{vs_name}} syncookies",
                       "range": true
                     },
@@ -4882,7 +4882,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_virtual_server_syncookie_rejects{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}[5m])",
+                      "expr": "rate(bigip_virtual_server_syncookie_rejects_total{instance=\"$Target\", partition=~\"$partition\", vs_name=~\"$Virtual_server\"}[5m])",
                       "legendFormat": "{{vs_name}} rejects",
                       "range": true
                     },
@@ -5457,7 +5457,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_pool_serverside_total_connections{instance=\"$Target\", partition=~\"$partition\", pool=~\"$Pool\"}[5m])",
+                      "expr": "rate(bigip_pool_serverside_connections_total{instance=\"$Target\", partition=~\"$partition\", pool=~\"$Pool\"}[5m])",
                       "legendFormat": "{{pool}} new/s",
                       "range": true
                     },
@@ -6021,7 +6021,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_node_total_requests{instance=\"$Target\", node=~\"$Node\"}[5m])",
+                      "expr": "rate(bigip_node_requests_total{instance=\"$Target\", node=~\"$Node\"}[5m])",
                       "legendFormat": "{{node}}",
                       "range": true
                     },
@@ -7057,7 +7057,7 @@
         "description": "",
         "id": 2102,
         "links": [],
-        "title": "Certificates — Days Remaining",
+        "title": "Certificates \u2014 Days Remaining",
         "vizConfig": {
           "group": "table",
           "kind": "VizConfig",
@@ -7455,7 +7455,7 @@
         "description": "",
         "id": 2204,
         "links": [],
-        "title": "Temperature (°C)",
+        "title": "Temperature (\u00b0C)",
         "vizConfig": {
           "group": "timeseries",
           "kind": "VizConfig",
@@ -7578,7 +7578,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "bigip_hardware_humidity_percent{instance=\"$Target\"}",
+                      "expr": "bigip_hardware_humidity_ratio{instance=\"$Target\"}",
                       "legendFormat": "Humidity {{index}}",
                       "range": true
                     },
@@ -7605,7 +7605,7 @@
                 "color": {
                   "mode": "thresholds"
                 },
-                "max": 100,
+                "max": 1,
                 "min": 0,
                 "thresholds": {
                   "mode": "absolute",
@@ -7616,15 +7616,15 @@
                     },
                     {
                       "color": "#EAB839",
-                      "value": 70
+                      "value": 0.7
                     },
                     {
                       "color": "red",
-                      "value": 85
+                      "value": 0.85
                     }
                   ]
                 },
-                "unit": "percent"
+                "unit": "percentunit"
               },
               "overrides": []
             },
@@ -8711,7 +8711,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_interface_counters_bits_in{instance=\"$Target\", name=~\"$Interface\"}[5m])",
+                      "expr": "rate(bigip_interface_received_bits_total{instance=\"$Target\", name=~\"$Interface\"}[5m])",
                       "legendFormat": "{{name}} In",
                       "range": true
                     },
@@ -8732,7 +8732,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_interface_counters_bits_out{instance=\"$Target\", name=~\"$Interface\"}[5m])",
+                      "expr": "rate(bigip_interface_sent_bits_total{instance=\"$Target\", name=~\"$Interface\"}[5m])",
                       "legendFormat": "{{name}} Out",
                       "range": true
                     },
@@ -8848,7 +8848,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_interface_counters_pkts_in{instance=\"$Target\", name=~\"$Interface\"}[5m])",
+                      "expr": "rate(bigip_interface_received_packets_total{instance=\"$Target\", name=~\"$Interface\"}[5m])",
                       "legendFormat": "{{name}} In",
                       "range": true
                     },
@@ -8869,7 +8869,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_interface_counters_pkts_out{instance=\"$Target\", name=~\"$Interface\"}[5m])",
+                      "expr": "rate(bigip_interface_sent_packets_total{instance=\"$Target\", name=~\"$Interface\"}[5m])",
                       "legendFormat": "{{name}} Out",
                       "range": true
                     },
@@ -8985,7 +8985,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_interface_counters_drops_all{instance=\"$Target\", name=~\"$Interface\"}[5m])",
+                      "expr": "rate(bigip_interface_dropped_packets_total{instance=\"$Target\", name=~\"$Interface\"}[5m])",
                       "legendFormat": "{{name}} Drops",
                       "range": true
                     },
@@ -9006,7 +9006,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(bigip_interface_counters_errors_all{instance=\"$Target\", name=~\"$Interface\"}[5m])",
+                      "expr": "rate(bigip_interface_errors_total{instance=\"$Target\", name=~\"$Interface\"}[5m])",
                       "legendFormat": "{{name}} Errors",
                       "range": true
                     },
@@ -9714,7 +9714,7 @@
         "description": "License start date, licensed-on date, and last service check date",
         "id": 2606,
         "links": [],
-        "title": "License — Important Dates",
+        "title": "License \u2014 Important Dates",
         "vizConfig": {
           "group": "table",
           "kind": "VizConfig",
@@ -9889,7 +9889,7 @@
                 ]
               }
             },
-            "title": "📊 Overview"
+            "title": "\ud83d\udcca Overview"
           }
         },
         {
@@ -9981,7 +9981,7 @@
                 ]
               }
             },
-            "title": "🖥️ System — CPU"
+            "title": "\ud83d\udda5\ufe0f System \u2014 CPU"
           }
         },
         {
@@ -10060,7 +10060,7 @@
                 ]
               }
             },
-            "title": "🧠 System — Memory & Disk"
+            "title": "\ud83e\udde0 System \u2014 Memory & Disk"
           }
         },
         {
@@ -10126,7 +10126,7 @@
                 ]
               }
             },
-            "title": "⚡ TMM (Core Engine)"
+            "title": "\u26a1 TMM (Core Engine)"
           }
         },
         {
@@ -10192,7 +10192,7 @@
                 ]
               }
             },
-            "title": "🔁 High Availability"
+            "title": "\ud83d\udd01 High Availability"
           }
         },
         {
@@ -10284,7 +10284,7 @@
                 ]
               }
             },
-            "title": "🌐 Global Traffic"
+            "title": "\ud83c\udf10 Global Traffic"
           }
         },
         {
@@ -10324,7 +10324,7 @@
                 ]
               }
             },
-            "title": "🔐 TMAuth"
+            "title": "\ud83d\udd10 TMAuth"
           }
         },
         {
@@ -10416,7 +10416,7 @@
                 ]
               }
             },
-            "title": "🎯 Virtual Servers"
+            "title": "\ud83c\udfaf Virtual Servers"
           }
         },
         {
@@ -10508,7 +10508,7 @@
                 ]
               }
             },
-            "title": "🏊 Pools"
+            "title": "\ud83c\udfca Pools"
           }
         },
         {
@@ -10574,7 +10574,7 @@
                 ]
               }
             },
-            "title": "🖧 Nodes"
+            "title": "\ud83d\udda7 Nodes"
           }
         },
         {
@@ -10679,7 +10679,7 @@
                 ]
               }
             },
-            "title": "🔒 Client-SSL"
+            "title": "\ud83d\udd12 Client-SSL"
           }
         },
         {
@@ -10719,7 +10719,7 @@
                 ]
               }
             },
-            "title": "📜 Certificates"
+            "title": "\ud83d\udcdc Certificates"
           }
         },
         {
@@ -10811,7 +10811,7 @@
                 ]
               }
             },
-            "title": "🌡️ Hardware (Appliance only)"
+            "title": "\ud83c\udf21\ufe0f Hardware (Appliance only)"
           }
         },
         {
@@ -10890,7 +10890,7 @@
                 ]
               }
             },
-            "title": "🌐 HTTP / TCP Profiles"
+            "title": "\ud83c\udf10 HTTP / TCP Profiles"
           }
         },
         {
@@ -10930,7 +10930,7 @@
                 ]
               }
             },
-            "title": "🔧 Devices"
+            "title": "\ud83d\udd27 Devices"
           }
         },
         {
@@ -10996,7 +10996,7 @@
                 ]
               }
             },
-            "title": "🔌 Interfaces"
+            "title": "\ud83d\udd0c Interfaces"
           }
         },
         {
@@ -11088,7 +11088,7 @@
                 ]
               }
             },
-            "title": "🔑 License"
+            "title": "\ud83d\udd11 License"
           }
         }
       ]
@@ -11122,7 +11122,7 @@
     "timezone": "browser",
     "to": "now"
   },
-  "title": "F5 BIG-IP Exporter — Full new",
+  "title": "F5 BIG-IP Exporter \u2014 Full new",
   "variables": [
     {
       "kind": "DatasourceVariable",
@@ -11222,7 +11222,7 @@
           "text": "All",
           "value": "$__all"
         },
-        "definition": "label_values(bigip_virtual_server_clientside_bits_in{instance=\"$Target\"}, partition)",
+        "definition": "label_values(bigip_virtual_server_client_side_received_bits_total{instance=\"$Target\"}, partition)",
         "hide": "dontHide",
         "includeAll": true,
         "label": "Partition",
@@ -11237,7 +11237,7 @@
           "kind": "DataQuery",
           "spec": {
             "qryType": 1,
-            "query": "label_values(bigip_virtual_server_clientside_bits_in{instance=\"$Target\"}, partition)",
+            "query": "label_values(bigip_virtual_server_client_side_received_bits_total{instance=\"$Target\"}, partition)",
             "refId": "StandardVariableQuery"
           },
           "version": "v0"
@@ -11257,7 +11257,7 @@
           "text": "All",
           "value": "$__all"
         },
-        "definition": "label_values(bigip_virtual_server_clientside_bits_in{instance=\"$Target\", partition=~\"$partition\"}, vs_name)",
+        "definition": "label_values(bigip_virtual_server_client_side_received_bits_total{instance=\"$Target\", partition=~\"$partition\"}, vs_name)",
         "hide": "dontHide",
         "includeAll": true,
         "label": "Virtual Server",
@@ -11272,7 +11272,7 @@
           "kind": "DataQuery",
           "spec": {
             "qryType": 1,
-            "query": "label_values(bigip_virtual_server_clientside_bits_in{instance=\"$Target\", partition=~\"$partition\"}, vs_name)",
+            "query": "label_values(bigip_virtual_server_client_side_received_bits_total{instance=\"$Target\", partition=~\"$partition\"}, vs_name)",
             "refId": "StandardVariableQuery"
           },
           "version": "v0"

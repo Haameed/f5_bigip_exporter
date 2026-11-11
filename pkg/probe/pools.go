@@ -52,7 +52,7 @@ func GetPoolProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool) {
 			[]string{"target", "pool", "partition"}, nil,
 		)
 		poolServersideTotalConns = prometheus.NewDesc(
-			"bigip_pool_serverside_total_connections",
+			"bigip_pool_serverside_connections_total",
 			"Total server side connections",
 			[]string{"target", "pool", "partition"}, nil,
 		)
@@ -67,7 +67,7 @@ func GetPoolProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool) {
 			[]string{"target", "pool", "partition"}, nil,
 		)
 		poolTotalRequests = prometheus.NewDesc(
-			"bigip_pool_total_requests",
+			"bigip_pool_requests_total",
 			"Total requests to the pool",
 			[]string{"target", "pool", "partition"}, nil,
 		)

@@ -38,8 +38,8 @@ func GetHardwareProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, boo
 			[]string{"target", "index", "location"}, nil,
 		)
 		humidity = prometheus.NewDesc(
-			"bigip_hardware_humidity_percent",
-			"Chassis humidity percentage",
+			"bigip_hardware_humidity_ratio",
+			"Chassis relative humidity ratio",
 			[]string{"target", "index"}, nil,
 		)
 		deviceInfo = prometheus.NewDesc(
@@ -174,8 +174,10 @@ func GetHardwareProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, boo
 				}
 				hasHardware = true
 				e := it.NestedStats.Entries
+				// Humidity is reported by the device as a 0-100 percentage;
+				// divide by 100 to expose a true 0-1 ratio.
 				m = append(m, prometheus.MustNewConstMetric(
-					humidity, prometheus.GaugeValue, float64(e.Humidity.Value),
+					humidity, prometheus.GaugeValue, float64(e.Humidity.Value)/100,
 					target, strconv.Itoa(e.Index.Value),
 				))
 			}
