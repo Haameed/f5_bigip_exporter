@@ -89,21 +89,24 @@ func GetTMMProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool) {
 			tmmID = strconv.Itoa(stats.Tmid.Value)
 		}
 
+		// The iControl REST API reports these "usage ratio" fields on a
+		// 0-100 scale (they are actually percentages); divide by 100 to
+		// expose true 0-1 ratios, per Prometheus naming conventions.
 		m = append(m, prometheus.MustNewConstMetric(
 			tmmCPUUsage, prometheus.GaugeValue,
-			float64(stats.Cpu.Value), target, tmmID,
+			float64(stats.Cpu.Value)/100, target, tmmID,
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			tmmFiveSecAvgUsage, prometheus.GaugeValue,
-			float64(stats.FiveSecAvgUsageRatio.Value), target, tmmID,
+			float64(stats.FiveSecAvgUsageRatio.Value)/100, target, tmmID,
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			tmmOneMinAvgUsage, prometheus.GaugeValue,
-			float64(stats.OneMinAvgUsageRatio.Value), target, tmmID,
+			float64(stats.OneMinAvgUsageRatio.Value)/100, target, tmmID,
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			tmmFiveMinAvgUsage, prometheus.GaugeValue,
-			float64(stats.FiveMinAvgUsageRatio.Value), target, tmmID,
+			float64(stats.FiveMinAvgUsageRatio.Value)/100, target, tmmID,
 		))
 		m = append(m, prometheus.MustNewConstMetric(
 			tmmMemoryTotal, prometheus.GaugeValue,

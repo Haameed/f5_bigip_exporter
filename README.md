@@ -112,7 +112,17 @@ On each `/probe` request:
 
 ## Metrics
 
-All metrics are prefixed with `bigip_` and carry a `target` label.
+All metrics are prefixed with `bigip_` and carry a `target` label, and follow
+the [Prometheus metric and label naming
+conventions](https://prometheus.io/docs/practices/naming/) (base units,
+`_total` for counters, `_ratio` for 0–1 fractions, `_info` for constant
+metadata metrics, `snake_case` names and labels throughout).
+
+> **Upgrading from < v1.0.0?** Several metric names and a handful of metric
+> *values* (CPU/humidity percentages, disk sizes, connection durations)
+> changed in v1.0.0 to comply with these conventions. See the
+> [CHANGELOG](CHANGELOG.md#100) before upgrading — your dashboards and
+> alert rules will need updating.
 
 ### Probe (per scrape)
 
@@ -127,19 +137,19 @@ Labels: `target`, `vs_name`, `partition` (state metrics add `availability_state`
 
 | Metric (suffix) | Type | Description |
 |-----------------|------|-------------|
-| `clientside_bits_in` / `clientside_bits_out` | gauge | Client-side throughput in bits |
-| `clientside_current_connections` | gauge | Current client-side connections |
-| `clientside_max_connections` | gauge | Maximum client-side connections |
-| `clientside_packets_in` / `clientside_packets_out` | gauge | Client-side packets |
-| `clientside_total_connections` | gauge | Total client-side connections |
-| `clientside_evicted_connections` / `clientside_slow_killed` | gauge | Evicted / slow-killed connections |
-| `ephemeral_*` | gauge | Same metrics for ephemeral connections |
-| `cs_max_conn_duration` / `cs_mean_conn_duration` / `cs_min_conn_duration` | gauge | Client-side connection durations |
-| `total_requests` | gauge | Total requests |
-| `one_min_avg_usage_ratio` / `five_sec_avg_usage_ratio` / `five_min_avg_usage_ratio` | gauge | CPU usage ratios |
-| `status_availability_state` / `status_enabled_state` | gauge | Availability / enabled state (value `1`, info in label) |
-| `syncookie_*` | gauge | Syncookie accepts, rejects, syncache, etc. |
-| `mr_msg_in` / `mr_req_in` / `mr_resp_out` ... | gauge | Message-router counters |
+| `client_side_received_bits_total` / `client_side_sent_bits_total` | counter | Client-side throughput in bits |
+| `client_side_current_connections` | gauge | Current client-side connections |
+| `client_side_max_connections` | gauge | Maximum client-side connections |
+| `client_side_received_packets_total` / `client_side_sent_packets_total` | counter | Client-side packets |
+| `client_side_connections_total` | counter | Total client-side connections |
+| `client_side_evicted_connections_total` / `client_side_slow_killed_connections_total` | counter | Evicted / slow-killed connections |
+| `ephemeral_*` | gauge/counter | Same metrics for ephemeral (FastL4) connections |
+| `client_side_connection_duration_max_seconds` / `..._mean_seconds` / `..._min_seconds` | gauge | Client-side connection durations, in seconds |
+| `requests_total` | counter | Total requests |
+| `one_min_avg_usage_ratio` / `five_sec_avg_usage_ratio` / `five_min_avg_usage_ratio` | gauge | CPU usage ratios (0-1) |
+| `availability_state_info` / `enabled_state_info` | gauge | Availability / enabled state (constant `1`, state in label) |
+| `syncookie_accepts_total` / `syncookie_rejects_total` / `syncookie_syncache_current_entries` / ... | counter/gauge | Syncookie accepts, rejects, syncache, etc. |
+| `mr_messages_in_total` / `mr_requests_in_total` / `mr_responses_out_total` ... | counter | Message-router counters |
 
 ### Pools (`bigip_pool_*`)
 
@@ -152,9 +162,9 @@ Labels: `target`, `pool`, `partition`. Member metric adds `member`, `session`.
 | `current_sessions` | gauge | Current sessions |
 | `serverside_bits_in_total` / `serverside_bits_out_total` | counter | Server-side throughput |
 | `serverside_current_connections` / `serverside_max_connections` | gauge | Server-side connections |
-| `serverside_total_connections` | counter | Total server-side connections |
+| `serverside_connections_total` | counter | Total server-side connections |
 | `serverside_packets_in_total` / `serverside_packets_out_total` | counter | Server-side packets |
-| `total_requests` | counter | Total requests |
+| `requests_total` | counter | Total requests |
 | `availability_state` | gauge | `0`=offline, `1`=unknown, `2`=available |
 | `enabled_state` | gauge | `0`=disabled, `1`=enabled |
 | `connq_*` / `connq_all_*` | gauge/counter | Connection-queue depth, serviced, age stats |
@@ -172,7 +182,7 @@ Labels: `target`, `host_id` (CPU metrics add `cpu_id`).
 | `bigip_system_active_cpu_count` | gauge | Active CPU cores |
 | `bigip_system_memory_total_bytes` | gauge | Total memory |
 | `bigip_system_memory_used_bytes` | gauge | Used memory |
-| `bigip_cpu_{five_sec,one_min,five_min}_avg_{user,system,idle,iowait,irq,softirq,niced,stolen}_percent` | gauge | Per-core CPU utilization averages |
+| `bigip_cpu_{five_sec,one_min,five_min}_avg_{user,system,idle,iowait,irq,softirq,niced,stolen}_ratio` | gauge | Per-core CPU utilization averages (0-1 ratio) |
 | `bigip_cpu_{user,system,idle,iowait,irq,softirq,niced,stolen}_ticks_total` | counter | Raw per-core CPU ticks |
 
 ### Disk (`bigip_disk_*`)
@@ -181,10 +191,10 @@ Labels: `target`, `name`, `mode`.
 
 | Metric | Type | Description |
 |--------|------|-------------|
-| `bigip_disk_total_size_MB` | gauge | Total disk size (MB) |
-| `bigip_disk_vg_free_size_MB` | gauge | Volume-group free size (MB) |
-| `bigip_disk_vg_inused_size_MB` | gauge | Volume-group in-use size (MB) |
-| `bigip_disk_vg_reserved_size_MB` | gauge | Volume-group reserved size (MB) |
+| `bigip_disk_size_bytes` | gauge | Total disk size, in bytes |
+| `bigip_disk_vg_free_bytes` | gauge | Volume-group free size, in bytes |
+| `bigip_disk_vg_in_use_bytes` | gauge | Volume-group in-use size, in bytes |
+| `bigip_disk_vg_reserved_bytes` | gauge | Volume-group reserved size, in bytes |
 
 ### SSL Certificates (`bigip_certificate_*`)
 
@@ -211,7 +221,7 @@ Labels: `target`, `name`, `partition` (plus `key_type`, `expiration_date` on som
 
 ### Global Traffic (`bigip_*_side_traffic_*`, `bigip_tmauth_*`, …)
 
-Label: `target`. Includes client/server-side throughput, packets, connections (current/max/total/evicted/slow-killed), 5s/1m/5m averages, `bigip_dropped_packets`, `bigip_HttpRequests`, packet errors, various deny counters, and TMAuth session/result metrics.
+Label: `target`. Includes client/server-side throughput, packets, connections (current/max/total/evicted/slow-killed), 5s/1m/5m averages, `bigip_dropped_packets_total`, `bigip_http_requests_total`, packet errors, various deny counters, and TMAuth session/result metrics.
 
 ### TMM (`bigip_tmm_*`)
 
@@ -237,9 +247,9 @@ Labels: `target`, `node`, `partition`, `address`.
 | `bigip_node_serverside_bits_in_total` / `_out_total` | counter | Server-side throughput |
 | `bigip_node_serverside_current_connections` | gauge | Current connections |
 | `bigip_node_serverside_max_connections` | gauge | Max connections |
-| `bigip_node_serverside_total_connections` | counter | Total connections |
+| `bigip_node_serverside_connections_total` | counter | Total connections |
 | `bigip_node_serverside_packets_in_total` / `_out_total` | counter | Server-side packets |
-| `bigip_node_total_requests` | counter | Total requests |
+| `bigip_node_requests_total` | counter | Total requests |
 | `bigip_node_monitor_status` | gauge | `0`=down, `1`=up, `2`=unchecked |
 | `bigip_node_availability_state` | gauge | `0`=offline, `1`=unknown, `2`=available |
 | `bigip_node_enabled_state` | gauge | `0`=disabled, `1`=enabled |
@@ -281,7 +291,7 @@ Labels: `target` (plus sensor-specific labels).
 | `bigip_hardware_power_supply_status` | gauge | PSU status `1`=up, `0`=not up (labels: `index`, `current_status`) |
 | `bigip_hardware_temperature_celsius` | gauge | Temperature in °C (labels: `index`, `location`) |
 | `bigip_hardware_temperature_high_limit_celsius` | gauge | High temperature limit in °C |
-| `bigip_hardware_humidity_percent` | gauge | Chassis humidity (%) |
+| `bigip_hardware_humidity_ratio` | gauge | Chassis relative humidity (0-1 ratio) |
 | `bigip_device_info` | gauge | Constant `1`; device metadata in labels: `marketing_name`, `platform`, `chassis_serial`, `base_mac`, `bios_revision` |
 
 #### Using the info metric in Grafana
@@ -329,20 +339,20 @@ Labels: `target`, `device`, `hostname`, `management_ip`.
 
 ### Interfaces (`bigip_interface_*`)
 
-Labels: `target`, `name` (status metric adds `bundle`, `bundleSpeed`,
-`flowControl`, `forceGigabitFiber`, `forwardErrorCorrection`,
-`linkTrapsEnabled`, `lldpAdmin`, `macAddress`, `mediaActive`, `mediaFixed`,
-`mediaMax`, `mediaSfp`, `mtu`, `portFwdMode`, `preferPort`, `qinqEthertype`,
-`sflowPollInterval`, `sflowPollIntervalGlobal`, `stp`, `stpAutoEdgePort`,
-`stpEdgePort`, `stpLinkType`).
+Labels: `target`, `name` (status metric adds `bundle`, `bundle_speed`,
+`flow_control`, `force_gigabit_fiber`, `forward_error_correction`,
+`link_traps_enabled`, `lldp_admin`, `mac_address`, `media_active`, `media_fixed`,
+`media_max`, `media_sfp`, `mtu`, `port_fwd_mode`, `prefer_port`, `qinq_ethertype`,
+`sflow_poll_interval`, `sflow_poll_interval_global`, `stp`, `stp_auto_edge_port`,
+`stp_edge_port`, `stp_link_type`).
 
 | Metric | Type | Description |
 |--------|------|-------------|
 | `bigip_interface_status` | gauge | `1`=up, `0`=down, `2`=disabled, `3`=uninit, `4`=miss, `-1`=unknown |
-| `bigip_interface_counters_bits_in` / `_bits_out` | counter | Interface throughput in bits |
-| `bigip_interface_counters_pkts_in` / `_pkts_out` | counter | Interface packet counts |
-| `bigip_interface_counters_drops_all` | counter | Packets dropped on the interface |
-| `bigip_interface_counters_errors_all` | counter | Errors on the interface |
+| `bigip_interface_received_bits_total` / `bigip_interface_sent_bits_total` | counter | Interface throughput in bits |
+| `bigip_interface_received_packets_total` / `bigip_interface_sent_packets_total` | counter | Interface packet counts |
+| `bigip_interface_dropped_packets_total` | counter | Packets dropped on the interface |
+| `bigip_interface_errors_total` | counter | Errors on the interface |
 
 > ⚠️ Because `disabled`, `uninit`, and `miss` are distinct from `down`, a
 > naive `bigip_interface_status == 0` alert only fires on genuine link

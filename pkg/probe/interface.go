@@ -14,36 +14,36 @@ func GetInterfaceProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bo
 		interfaceStatus = prometheus.NewDesc(
 			"bigip_interface_status",
 			"Status of the interface (0 = down, 1 = up, 2 = disabled, 3 = uninit, 4 = missing/miss, -1 = unknown)",
-			[]string{"target", "name", "bundle", "bundleSpeed", "flowControl", "forceGigabitFiber", "forwardErrorCorrection", "linkTrapsEnabled", "lldpAdmin", "macAddress", "mediaActive", "mediaFixed", "mediaMax", "mediaSfp", "mtu", "portFwdMode", "preferPort", "qinqEthertype", "sflowPollInterval", "sflowPollIntervalGlobal", "stp", "stpAutoEdgePort", "stpEdgePort", "stpLinkType"}, nil,
+			[]string{"target", "name", "bundle", "bundle_speed", "flow_control", "force_gigabit_fiber", "forward_error_correction", "link_traps_enabled", "lldp_admin", "mac_address", "media_active", "media_fixed", "media_max", "media_sfp", "mtu", "port_fwd_mode", "prefer_port", "qinq_ethertype", "sflow_poll_interval", "sflow_poll_interval_global", "stp", "stp_auto_edge_port", "stp_edge_port", "stp_link_type"}, nil,
 		)
 		countersBitsIn = prometheus.NewDesc(
-			"bigip_interface_counters_bits_in",
-			"Number of bits received on the interface",
+			"bigip_interface_received_bits_total",
+			"Total number of bits received on the interface",
 			[]string{"target", "name"}, nil,
 		)
 		countersBitsOut = prometheus.NewDesc(
-			"bigip_interface_counters_bits_out",
-			"Number of bits sent on the interface",
+			"bigip_interface_sent_bits_total",
+			"Total number of bits sent on the interface",
 			[]string{"target", "name"}, nil,
 		)
 		countersPktsIn = prometheus.NewDesc(
-			"bigip_interface_counters_pkts_in",
-			"Number of packets received on the interface",
+			"bigip_interface_received_packets_total",
+			"Total number of packets received on the interface",
 			[]string{"target", "name"}, nil,
 		)
 		countersPktsOut = prometheus.NewDesc(
-			"bigip_interface_counters_pkts_out",
-			"Number of packets sent on the interface",
+			"bigip_interface_sent_packets_total",
+			"Total number of packets sent on the interface",
 			[]string{"target", "name"}, nil,
 		)
 		countersDropsAll = prometheus.NewDesc(
-			"bigip_interface_counters_drops_all",
-			"Number of packets dropped on the interface",
+			"bigip_interface_dropped_packets_total",
+			"Total number of packets dropped on the interface",
 			[]string{"target", "name"}, nil,
 		)
 		countersErrorsAll = prometheus.NewDesc(
-			"bigip_interface_counters_errors_all",
-			"Number of errors on the interface",
+			"bigip_interface_errors_total",
+			"Total number of errors on the interface",
 			[]string{"target", "name"}, nil,
 		)
 	)
