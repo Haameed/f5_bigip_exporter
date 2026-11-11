@@ -25,12 +25,12 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 
 	var (
 		ClientSideTrafficBitsIn = prometheus.NewDesc(
-			"bigip_client_side_traffic_bits_in",
+			"bigip_client_side_received_bits_total",
 			"Client side traffic bits in",
 			[]string{"target"}, nil,
 		)
 		ClientSideTrafficBitsOut = prometheus.NewDesc(
-			"bigip_client_side_traffic_bits_out",
+			"bigip_client_side_sent_bits_total",
 			"Client side traffic bits out",
 			[]string{"target"}, nil,
 		)
@@ -40,7 +40,7 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 			[]string{"target"}, nil,
 		)
 		ClientSideTrafficEvictedConns = prometheus.NewDesc(
-			"bigip_client_side_traffic_evicted_connections",
+			"bigip_client_side_evicted_connections_total",
 			"Evicted client side connections",
 			[]string{"target"}, nil,
 		)
@@ -50,249 +50,249 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 			[]string{"target"}, nil,
 		)
 		ClientSideTrafficPktsIn = prometheus.NewDesc(
-			"bigip_client_side_traffic_packets_in_total",
+			"bigip_client_side_received_packets_total",
 			"Total packets received on client side",
 			[]string{"target"}, nil,
 		)
 		ClientSideTrafficPktsOut = prometheus.NewDesc(
-			"bigip_client_side_traffic_packets_out_total",
+			"bigip_client_side_sent_packets_total",
 			"Total packets sent on client side",
 			[]string{"target"}, nil,
 		)
 		ClientSideTrafficSlowKilled = prometheus.NewDesc(
-			"bigip_client_side_traffic_slow_killed_connections",
+			"bigip_client_side_slow_killed_connections_total",
 			"Slowly killed client side connections",
 			[]string{"target"}, nil,
 		)
 		ClientSideTrafficTotConns = prometheus.NewDesc(
-			"bigip_client_side_traffic_total_connections",
+			"bigip_client_side_connections_total",
 			"Total client side connections",
 			[]string{"target"}, nil,
 		)
 		ConnectionMemoryErrors = prometheus.NewDesc(
-			"bigip_connection_memory_errors",
+			"bigip_connection_memory_errors_total",
 			"Connection memory errors",
 			[]string{"target"}, nil,
 		)
 		DroppedPackets = prometheus.NewDesc(
-			"bigip_dropped_packets",
+			"bigip_dropped_packets_total",
 			"Dropped packets",
 			[]string{"target"}, nil,
 		)
 		FiveMinAvgClientSideTrafficBitsIn = prometheus.NewDesc(
-			"bigip_FiveMinAvg_client_side_traffic_bits_in",
+			"bigip_five_min_avg_client_side_traffic_bits_in",
 			"5 minute average client side traffic bits in",
 			[]string{"target"}, nil,
 		)
 		FiveMinAvgClientSideTrafficBitsOut = prometheus.NewDesc(
-			"bigip_FiveMinAvg_client_side_traffic_bits_out",
+			"bigip_five_min_avg_client_side_traffic_bits_out",
 			"5 minute average client side traffic bits out",
 			[]string{"target"}, nil,
 		)
 		FiveMinAvgClientSideTrafficPktsIn = prometheus.NewDesc(
-			"bigip_FiveMinAvg_client_side_traffic_packets_in_total",
+			"bigip_five_min_avg_client_side_traffic_packets_in",
 			"5 minute average client side traffic packets in total",
 			[]string{"target"}, nil,
 		)
 		FiveMinAvgClientSideTrafficPktsOut = prometheus.NewDesc(
-			"bigip_FiveMinAvg_client_side_traffic_packets_out_total",
+			"bigip_five_min_avg_client_side_traffic_packets_out",
 			"5 minute average client side traffic packets out total",
 			[]string{"target"}, nil,
 		)
 		FiveMinAvgClientSideTrafficTotConns = prometheus.NewDesc(
-			"bigip_FiveMinAvg_client_side_traffic_total_connections",
+			"bigip_five_min_avg_client_side_traffic_connections",
 			"5 minute average client side traffic total connections",
 			[]string{"target"}, nil,
 		)
 		FiveMinAvgServerSideTrafficBitsIn = prometheus.NewDesc(
-			"bigip_FiveMinAvg_server_side_traffic_bits_in",
+			"bigip_five_min_avg_server_side_traffic_bits_in",
 			"5 minute average server side traffic bits in",
 			[]string{"target"}, nil,
 		)
 		FiveMinAvgServerSideTrafficBitsOut = prometheus.NewDesc(
-			"bigip_FiveMinAvg_server_side_traffic_bits_out",
+			"bigip_five_min_avg_server_side_traffic_bits_out",
 			"5 minute average server side traffic bits out",
 			[]string{"target"}, nil,
 		)
 		FiveMinAvgServerSideTrafficPktsIn = prometheus.NewDesc(
-			"bigip_FiveMinAvg_server_side_traffic_packets_in_total",
+			"bigip_five_min_avg_server_side_traffic_packets_in",
 			"5 minute average server side traffic packets in total",
 			[]string{"target"}, nil,
 		)
 		FiveMinAvgServerSideTrafficPktsOut = prometheus.NewDesc(
-			"bigip_FiveMinAvg_server_side_traffic_packets_out_total",
+			"bigip_five_min_avg_server_side_traffic_packets_out",
 			"5 minute average server side traffic packets out total",
 			[]string{"target"}, nil,
 		)
 		FiveMinAvgServerSideTrafficTotConns = prometheus.NewDesc(
-			"bigip_FiveMinAvg_server_side_traffic_total_connections",
+			"bigip_five_min_avg_server_side_traffic_connections",
 			"5 minute average server side traffic total connections",
 			[]string{"target"}, nil,
 		)
 		FiveSecAvgClientSideTrafficBitsIn = prometheus.NewDesc(
-			"bigip_FiveSecAvg_client_side_traffic_bits_in",
+			"bigip_five_sec_avg_client_side_traffic_bits_in",
 			"5 second average client side traffic bits in",
 			[]string{"target"}, nil,
 		)
 		FiveSecAvgClientSideTrafficBitsOut = prometheus.NewDesc(
-			"bigip_FiveSecAvg_client_side_traffic_bits_out",
+			"bigip_five_sec_avg_client_side_traffic_bits_out",
 			"5 second average client side traffic bits out",
 			[]string{"target"}, nil,
 		)
 		FiveSecAvgClientSideTrafficPktsIn = prometheus.NewDesc(
-			"bigip_FiveSecAvg_client_side_traffic_packets_in_total",
+			"bigip_five_sec_avg_client_side_traffic_packets_in",
 			"5 second average client side traffic packets in total",
 			[]string{"target"}, nil,
 		)
 		FiveSecAvgClientSideTrafficPktsOut = prometheus.NewDesc(
-			"bigip_FiveSecAvg_client_side_traffic_packets_out_total",
+			"bigip_five_sec_avg_client_side_traffic_packets_out",
 			"5 second average client side traffic packets out total",
 			[]string{"target"}, nil,
 		)
 		FiveSecAvgClientSideTrafficTotConns = prometheus.NewDesc(
-			"bigip_FiveSecAvg_client_side_traffic_total_connections",
+			"bigip_five_sec_avg_client_side_traffic_connections",
 			"5 second average client side traffic total connections",
 			[]string{"target"}, nil,
 		)
 		FiveSecAvgServerSideTrafficBitsIn = prometheus.NewDesc(
-			"bigip_FiveSecAvg_server_side_traffic_bits_in",
+			"bigip_five_sec_avg_server_side_traffic_bits_in",
 			"5 second average server side traffic bits in",
 			[]string{"target"}, nil,
 		)
 		FiveSecAvgServerSideTrafficBitsOut = prometheus.NewDesc(
-			"bigip_FiveSecAvg_server_side_traffic_bits_out",
+			"bigip_five_sec_avg_server_side_traffic_bits_out",
 			"5 second average server side traffic bits out",
 			[]string{"target"}, nil,
 		)
 		FiveSecAvgServerSideTrafficPktsIn = prometheus.NewDesc(
-			"bigip_FiveSecAvg_server_side_traffic_packets_in_total",
+			"bigip_five_sec_avg_server_side_traffic_packets_in",
 			"5 second average server side traffic packets in total",
 			[]string{"target"}, nil,
 		)
 		FiveSecAvgServerSideTrafficPktsOut = prometheus.NewDesc(
-			"bigip_FiveSecAvg_server_side_traffic_packets_out_total",
+			"bigip_five_sec_avg_server_side_traffic_packets_out",
 			"5 second average server side traffic packets out total",
 			[]string{"target"}, nil,
 		)
 		FiveSecAvgServerSideTrafficTotConns = prometheus.NewDesc(
-			"bigip_FiveSecAvg_server_side_traffic_total_connections",
+			"bigip_five_sec_avg_server_side_traffic_connections",
 			"5 second average server side traffic total connections",
 			[]string{"target"}, nil,
 		)
 		HardwareSyncookiesDetected = prometheus.NewDesc(
-			"bigip_HardwareSyncookiesDetected",
+			"bigip_hardware_syncookies_detected_total",
 			"Hardware SYN cookies detected",
 			[]string{"target"}, nil,
 		)
 		HardwareSyncookiesGenerated = prometheus.NewDesc(
-			"bigip_HardwareSyncookiesGenerated",
+			"bigip_hardware_syncookies_generated_total",
 			"Hardware SYN cookies generated",
 			[]string{"target"}, nil,
 		)
 
 		HttpRequests = prometheus.NewDesc(
-			"bigip_HttpRequests",
+			"bigip_http_requests_total",
 			"HTTP requests",
 			[]string{"target"}, nil,
 		)
 		IncomingPacketErrors = prometheus.NewDesc(
-			"bigip_IncomingPacketErrors",
+			"bigip_incoming_packet_errors_total",
 			"Incoming packet errors",
 			[]string{"target"}, nil,
 		)
 		LicenseDeny = prometheus.NewDesc(
-			"bigip_LicenseDeny",
+			"bigip_license_deny_total",
 			"License deny",
 			[]string{"target"}, nil,
 		)
 		MaintenanceModeDeny = prometheus.NewDesc(
-			"bigip_MaintenanceModeDeny",
+			"bigip_maintenance_mode_deny_total",
 			"Maintenance mode deny",
 			[]string{"target"}, nil,
 		)
 		MaxConnVirtualAddressDeny = prometheus.NewDesc(
-			"bigip_MaxConnVirtualAddressDeny",
+			"bigip_max_conn_virtual_address_deny_total",
 			"Maximum connections per virtual address deny",
 			[]string{"target"}, nil,
 		)
 		MaxConnVirtualPathDeny = prometheus.NewDesc(
-			"bigip_MaxConnVirtualPathDeny",
+			"bigip_max_conn_virtual_path_deny_total",
 			"Maximum connections per virtual path deny",
 			[]string{"target"}, nil,
 		)
 
 		NoHandlerDeny = prometheus.NewDesc(
-			"bigip_NoHandlerDeny",
+			"bigip_no_handler_deny_total",
 			"No handler deny",
 			[]string{"target"}, nil,
 		)
 		NoStagedHandlerDeny = prometheus.NewDesc(
-			"bigip_NoStagedHandlerDeny",
+			"bigip_no_staged_handler_deny_total",
 			"No staged handler deny",
 			[]string{"target"}, nil,
 		)
 		OneMinAvgClientSideTrafficBitsIn = prometheus.NewDesc(
-			"bigip_OneMinAvg_client_side_traffic_bits_in",
+			"bigip_one_min_avg_client_side_traffic_bits_in",
 			"1 minute average client side traffic bits in",
 			[]string{"target"}, nil,
 		)
 		OneMinAvgClientSideTrafficBitsOut = prometheus.NewDesc(
-			"bigip_OneMinAvg_client_side_traffic_bits_out",
+			"bigip_one_min_avg_client_side_traffic_bits_out",
 			"1 minute average client side traffic bits out",
 			[]string{"target"}, nil,
 		)
 		OneMinAvgClientSideTrafficPktsIn = prometheus.NewDesc(
-			"bigip_OneMinAvg_client_side_traffic_packets_in_total",
+			"bigip_one_min_avg_client_side_traffic_packets_in",
 			"1 minute average client side traffic packets in total",
 			[]string{"target"}, nil,
 		)
 		OneMinAvgClientSideTrafficPktsOut = prometheus.NewDesc(
-			"bigip_OneMinAvg_client_side_traffic_packets_out_total",
+			"bigip_one_min_avg_client_side_traffic_packets_out",
 			"1 minute average client side traffic packets out total",
 			[]string{"target"}, nil,
 		)
 		OneMinAvgClientSideTrafficTotConns = prometheus.NewDesc(
-			"bigip_OneMinAvg_client_side_traffic_total_connections",
+			"bigip_one_min_avg_client_side_traffic_connections",
 			"1 minute average client side traffic total connections",
 			[]string{"target"}, nil,
 		)
 		OneMinAvgServerSideTrafficBitsIn = prometheus.NewDesc(
-			"bigip_OneMinAvg_server_side_traffic_bits_in",
+			"bigip_one_min_avg_server_side_traffic_bits_in",
 			"1 minute average server side traffic bits in",
 			[]string{"target"}, nil,
 		)
 		OneMinAvgServerSideTrafficBitsOut = prometheus.NewDesc(
-			"bigip_OneMinAvg_server_side_traffic_bits_out",
+			"bigip_one_min_avg_server_side_traffic_bits_out",
 			"1 minute average server side traffic bits out",
 			[]string{"target"}, nil,
 		)
 		OneMinAvgServerSideTrafficPktsIn = prometheus.NewDesc(
-			"bigip_OneMinAvg_server_side_traffic_packets_in_total",
+			"bigip_one_min_avg_server_side_traffic_packets_in",
 			"1 minute average server side traffic packets in total",
 			[]string{"target"}, nil,
 		)
 		OneMinAvgServerSideTrafficPktsOut = prometheus.NewDesc(
-			"bigip_OneMinAvg_server_side_traffic_packets_out_total",
+			"bigip_one_min_avg_server_side_traffic_packets_out",
 			"1 minute average server side traffic packets out total",
 			[]string{"target"}, nil,
 		)
 		OneMinAvgServerSideTrafficTotConns = prometheus.NewDesc(
-			"bigip_OneMinAvg_server_side_traffic_total_connections",
+			"bigip_one_min_avg_server_side_traffic_connections",
 			"1 minute average server side traffic total connections",
 			[]string{"target"}, nil,
 		)
 		OutgoingPacketErrors = prometheus.NewDesc(
-			"bigip_OutgoingPacketErrors",
+			"bigip_outgoing_packet_errors_total",
 			"Outgoing packet errors",
 			[]string{"target"}, nil,
 		)
 		ServerSideTrafficBitsIn = prometheus.NewDesc(
-			"bigip_server_side_traffic_bits_in",
+			"bigip_server_side_received_bits_total",
 			"Server side traffic bits in",
 			[]string{"target"}, nil,
 		)
 		ServerSideTrafficBitsOut = prometheus.NewDesc(
-			"bigip_server_side_traffic_bits_out",
+			"bigip_server_side_sent_bits_total",
 			"Server side traffic bits out",
 			[]string{"target"}, nil,
 		)
@@ -303,7 +303,7 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 			[]string{"target"}, nil,
 		)
 		ServerSideTrafficEvictedConns = prometheus.NewDesc(
-			"bigip_server_side_traffic_evicted_connections",
+			"bigip_server_side_traffic_evicted_connections_total",
 			"Evicted connections on server side",
 			[]string{"target"}, nil,
 		)
@@ -313,22 +313,22 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 			[]string{"target"}, nil,
 		)
 		ServerSideTrafficPktsIn = prometheus.NewDesc(
-			"bigip_server_side_traffic_packets_in_total",
+			"bigip_server_side_received_packets_total",
 			"Server side traffic packets in total",
 			[]string{"target"}, nil,
 		)
 		ServerSideTrafficPktsOut = prometheus.NewDesc(
-			"bigip_server_side_traffic_packets_out_total",
+			"bigip_server_side_sent_packets_total",
 			"Server side traffic packets out total",
 			[]string{"target"}, nil,
 		)
 		ServerSideTrafficSlowKilled = prometheus.NewDesc(
-			"bigip_server_side_traffic_slow_killed",
+			"bigip_server_side_traffic_slow_killed_connections_total",
 			"Server side traffic slow killed",
 			[]string{"target"}, nil,
 		)
 		ServerSideTrafficTotConns = prometheus.NewDesc(
-			"bigip_server_side_traffic_total_connections",
+			"bigip_server_side_connections_total",
 			"Server side traffic total connections",
 			[]string{"target"}, nil,
 		)
@@ -340,7 +340,7 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 		)
 
 		TmauthFailureResults = prometheus.NewDesc(
-			"bigip_tmauth_failure_results",
+			"bigip_tmauth_failure_results_total",
 			"Failure results in TMAuth",
 			[]string{"target"}, nil,
 		)
@@ -350,27 +350,27 @@ func GetTrafficProbe(c http.BigIPHTTP, target string) ([]prometheus.Metric, bool
 			[]string{"target"}, nil,
 		)
 		TmauthSuccessResults = prometheus.NewDesc(
-			"bigip_tmauth_success_results",
+			"bigip_tmauth_success_results_total",
 			"Success results in TMAuth",
 			[]string{"target"}, nil,
 		)
 		TmauthErrorResults = prometheus.NewDesc(
-			"bigip_tmauth_error_results",
+			"bigip_tmauth_error_results_total",
 			"Error results in TMAuth",
 			[]string{"target"}, nil,
 		)
 		TmauthWantcredentialResults = prometheus.NewDesc(
-			"bigip_tmauth_wantcredential_results",
+			"bigip_tmauth_wantcredential_results_total",
 			"Want credential results in TMAuth",
 			[]string{"target"}, nil,
 		)
 		TmauthTotSessions = prometheus.NewDesc(
-			"bigip_tmauth_total_sessions",
+			"bigip_tmauth_sessions_total",
 			"Total sessions in TMAuth",
 			[]string{"target"}, nil,
 		)
 		VirtualServerNonSynDeny = prometheus.NewDesc(
-			"bigip_virtual_server_non_syn_deny",
+			"bigip_virtual_server_non_syn_deny_total",
 			"Non-SYN packets denied on virtual server",
 			[]string{"target"}, nil,
 		)
